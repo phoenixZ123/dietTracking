@@ -1,0 +1,168 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Role {
+    id         Int      @id @default(autoincrement())
+    name       String   @unique
+    users      User[]
+    created_at DateTime @default(now())
+    isActive   Boolean
+}
+
+model User {
+    id         Int      @id @default(autoincrement())
+    uuid       String   @unique @default(uuid()) // public UUID
+    email      String?  @unique
+    phone_no   String?  @unique
+    password   String
+    name       String
+    roleId     Int      @default(2)
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    profiles   Profile?
+    dailyLogs  DailyLog[]
+    WorkoutLog WorkoutLog[]
+    WaterLog   WaterLog[]
+    WeightLog  WeightLog[]
+
+    role        Role         @relation(fields: [roleId], references: [id])
+    userSession UserSession?
+}
+
+model UserSession {
+    id           Int       @id @default(autoincrement())
+    uuid         String    @unique @default(uuid()) // public UUID
+    userId       Int       @unique
+    user         User      @relation(fields: [userId], references: [id])
+    refreshToken String
+    device_type  String
+    userAgent    String
+    ipAddress    String?
+    is_online    Boolean   @default(false)
+    firebase_key String?
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime  @updatedAt
+    expiresAt    DateTime?
+}
+
+model Profile {
+    id          Int           @id @default(autoincrement())
+    uuid        String        @unique @default(uuid()) // public UUID
+    userId      Int           @unique
+    gender      Gender?
+    birthDate   DateTime?
+    heightCm    Float?
+    weightKg    Float?
+    goalWeight  Float?
+    activityLvl ActivityLevel @default(MEDIUM)
+
+    user User @relation(fields: [userId], references: [id])
+}
+
+model Food {
+    id          Int      @id @default(autoincrement())
+    uuid        String   @unique @default(uuid()) // public UUID
+    name        String
+    calories    Float
+    protein     Float
+    carbs       Float
+    fat         Float
+    servingSize Float
+    created_at  DateTime @default(now())
+    updated_at  DateTime @updatedAt
+
+    mealItems MealItem[]
+}
+
+model DailyLog {
+    id     Int      @id @default(autoincrement())
+    uuid   String   @unique @default(uuid())
+    date   DateTime
+    userId Int
+
+    user  User   @relation(fields: [userId], references: [id])
+    meals Meal[]
+}
+
+model Meal {
+    id    Int    @id @default(autoincrement())
+    uuid  String @unique @default(uuid())
+    name  String
+    logId Int
+
+    dailyLog DailyLog   @relation(fields: [logId], references: [id])
+    items    MealItem[]
+}
+
+model MealItem {
+    id       Int    @id @default(autoincrement())
+    uuid     String @unique @default(uuid())
+    mealId   Int
+    foodId   Int
+    quantity Float
+
+    meal Meal @relation(fields: [mealId], references: [id])
+    food Food @relation(fields: [foodId], references: [id])
+}
+
+model Exercise {
+    id                   Int      @id @default(autoincrement())
+    uuid                 String   @unique @default(uuid())
+    name                 String
+    caloriesBurnedPerMin Float
+    created_at           DateTime @default(now())
+    updated_at           DateTime @updatedAt
+
+    workoutLogs WorkoutLog[]
+}
+
+model WorkoutLog {
+    id          Int      @id @default(autoincrement())
+    uuid        String   @unique @default(uuid())
+    date        DateTime
+    userId      Int
+    exerciseId  Int
+    durationMin Float
+
+    user     User     @relation(fields: [userId], references: [id])
+    exercise Exercise @relation(fields: [exerciseId], references: [id])
+}
+
+model WaterLog {
+    id     Int      @id @default(autoincrement())
+    uuid   String   @unique @default(uuid())
+    date   DateTime
+    userId Int
+    amount Float
+
+    user User @relation(fields: [userId], references: [id])
+}
+
+model WeightLog {
+    id       Int      @id @default(autoincrement())
+    uuid     String   @unique @default(uuid())
+    date     DateTime
+    userId   Int
+    weightKg Float
+
+    user User @relation(fields: [userId], references: [id])
+}
+
+enum Gender {
+    MALE
+    FEMALE
+    OTHER
+}
+
+enum ActivityLevel {
+    LOW
+    MEDIUM
+    HIGH
+}
