@@ -3,7 +3,7 @@ import App from "../App";
 import { createBrowserRouter } from "react-router-dom";
 import { ProtectedRoute, PublicRoute } from "./guard";
 import Dashboard from "../features/dashboard/dashboard";
-import Login from "../features/Login/Login";
+import Login from "../features/Login/login";
 import Register from "../features/Register/register";
 
 const router = createBrowserRouter([

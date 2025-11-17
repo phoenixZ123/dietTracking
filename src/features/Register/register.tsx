@@ -23,7 +23,7 @@ import { useRegisterUser } from "../../composables/commands/registerMutation";
 import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
-  username: z
+  name: z
     .string()
     .min(4, "Username must be at least 4 characters")
     .max(50, "Username cannot exceed 50 characters"),
@@ -37,7 +37,7 @@ export default function Register() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      name: "",
       email: "",
       phone_no: "",
       password: "",
@@ -70,7 +70,7 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
-                name="username"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Username</FormLabel>
