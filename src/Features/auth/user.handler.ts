@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { http_status } from "Features/shared/constants/http";
+import { http_status } from "../../Features/shared/constants/http";
 import { AuthService } from "./user.service";
 import { CreateUser } from "./types/user";
-import logger from "Features/core/logger";
+import logger from "../../Features/core/logger";
 
 const authService = new AuthService();
 

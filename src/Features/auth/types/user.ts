@@ -11,11 +11,12 @@ export type UserLogin = {
     role?: RoleType;
 }
 export type CreateUser = {
-    uuid: string;
+    id: string;
     email: string | "";
     name: string;
     phone_no: string | "";
     password: string;
+    roleId?: string;
 }
 export interface UserCreateResponse {
     id: number;

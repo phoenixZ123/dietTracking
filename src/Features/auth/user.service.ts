@@ -1,75 +1,15 @@
-// import { FastifyInstance, FastifyRequest } from "fastify";
-// import { IAuthRepository } from "./auth.interface";
-// import { CreateUser, RegisterResponse, UserCreateResponse } from "./types/user";
-// import { http_status } from "Features/shared/constants/http";
-// import { changePhoneNo } from "Features/utils/phone.util";
-// import { v4 as uuidv4 } from 'uuid';
-
-// interface ResetResponse {
-//     status: boolean;
-//     message: string;
-// }
-
-// export class AuthService {
-//     constructor(private authRepository: IAuthRepository) { }
-
-//     async checkUserExists(
-//         fastify: FastifyInstance,
-//         phoneOrEmail: string
-//     ): Promise<ResetResponse> {
-//         try {
-//             const user = await this.authRepository.findByEmailOrPhone(phoneOrEmail);
-//             if (!user) {
-//                 return { status: false, message: "User is not registered" };
-//             }
-//             return { status: true, message: "User exist!" };
-
-//         } catch (err) {
-//             return { status: false, message: `${err}` };
-//         }
-//     }
-//     async register(fastify: FastifyInstance, userData: CreateUser) {
-//         var result: RegisterResponse = {}
-//         try {
-//             if (userData.phone_no) {
-//                 userData.phone_no = changePhoneNo(userData.phone_no)
-//             }
-//             const user: UserCreateResponse = await this.authRepository.createUser(userData);
-//             const emailOrPhone = userData.phone_no || userData?.email!;
-//             const existingUser = await this.authRepository.findByEmailOrPhone(
-//                 emailOrPhone
-//             );
-//             if (existingUser) {
-//                 result.status = false;
-//                 result.message = "User already exists";
-//                 return result;
-//             }
-//             if (user) {
-//                 result.status = true
-//                 result.message = "User Created Successfully"
-//                 result.data = user
-//                 return result
-//             }
-//         } catch (err: any) {
-//             result.status = false
-//             result.message = err.message
-//             return result;
-//         }
-
-//     }
-// }
 import fastify, { FastifyInstance } from "fastify";
 import bcrypt from "bcrypt";
 import { CreateUser, UserLogin } from "./types/user";
 import { RegisterResponse } from "./types/user";
 import { AuthRepository } from "./user.repository";
-import { changePhoneNo } from "Features/utils/phone.util";
-import { hashPassword } from "Features/utils/hash";
-import { UserStatus } from "Features/shared/constants/userConstraint";
-import { http_status } from "Features/shared/constants/http";
+import { changePhoneNo } from "../../Features/utils/phone.util";
+import { hashPassword } from "../../Features/utils/hash";
+import { UserStatus } from "../../Features/shared/constants/userConstraint";
+import { http_status } from "../../Features/shared/constants/http";
 import { JwtPayload } from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
-import { generateJWT } from "Features/utils/auth.util";
+import { generateJWT } from "../../Features/utils/auth.util";
 export class AuthService {
     private authRepository = new AuthRepository();
 

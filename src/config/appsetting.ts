@@ -6,7 +6,7 @@ dotenv.config({ path: path.resolve(__dirname, `../../.env.${process.env.NODE_ENV
 const config = {
     database: {
         mysql: {
-            databaseUrl: process.env.POSTGRES_URL,
+            databaseUrl: process.env.DATABASE_URL,
         }
     },
     smspoh: {

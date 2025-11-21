@@ -8,39 +8,37 @@ datasource db {
 }
 
 model Role {
-    id         Int      @id @default(autoincrement())
+    id         String   @id @default(uuid())
     name       String   @unique
-    users      User[]
+    users      User[] // relation, no onDelete here
     created_at DateTime @default(now())
-    isActive   Boolean
+    isActive   Boolean  @default(true)
 }
 
 model User {
-    id         Int      @id @default(autoincrement())
-    uuid       String   @unique @default(uuid()) // public UUID
-    email      String?  @unique
-    phone_no   String?  @unique
-    password   String
-    name       String
-    roleId     Int      @default(2)
+    id       String  @id @default(uuid())
+    email    String? @unique
+    phone_no String? @unique
+    password String
+    name     String
+    roleId   String
+    role     Role    @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
-    profiles   Profile?
-    dailyLogs  DailyLog[]
-    WorkoutLog WorkoutLog[]
-    WaterLog   WaterLog[]
-    WeightLog  WeightLog[]
-
-    role        Role         @relation(fields: [roleId], references: [id])
+    profiles    Profile?
+    dailyLogs   DailyLog[]
+    workoutLogs WorkoutLog[]
+    waterLogs   WaterLog[]
+    weightLogs  WeightLog[]
     userSession UserSession?
 }
 
 model UserSession {
-    id           Int       @id @default(autoincrement())
-    uuid         String    @unique @default(uuid()) // public UUID
-    userId       Int       @unique
-    user         User      @relation(fields: [userId], references: [id])
+    id           String    @id @default(uuid())
+    userId       String    @unique
+    user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
     refreshToken String
     device_type  String
     userAgent    String
@@ -53,9 +51,8 @@ model UserSession {
 }
 
 model Profile {
-    id          Int           @id @default(autoincrement())
-    uuid        String        @unique @default(uuid()) // public UUID
-    userId      Int           @unique
+    id          String        @id @default(uuid())
+    userId      String        @unique
     gender      Gender?
     birthDate   DateTime?
     heightCm    Float?
@@ -63,12 +60,78 @@ model Profile {
     goalWeight  Float?
     activityLvl ActivityLevel @default(MEDIUM)
 
-    user User @relation(fields: [userId], references: [id])
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model DailyLog {
+    id     String   @id @default(uuid())
+    date   DateTime
+    userId String
+
+    user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    meals Meal[]
+}
+
+model Meal {
+    id    String @id @default(uuid())
+    name  String
+    logId String
+
+    dailyLog DailyLog   @relation(fields: [logId], references: [id], onDelete: Cascade)
+    items    MealItem[]
+}
+
+model MealItem {
+    id       String @id @default(uuid())
+    mealId   String
+    foodId   String
+    quantity Float
+
+    meal Meal @relation(fields: [mealId], references: [id], onDelete: Cascade)
+    food Food @relation(fields: [foodId], references: [id])
+}
+
+model Exercise {
+    id                   String   @id @default(uuid())
+    name                 String
+    caloriesBurnedPerMin Float
+    created_at           DateTime @default(now())
+    updated_at           DateTime @updatedAt
+
+    workoutLogs WorkoutLog[]
+}
+
+model WorkoutLog {
+    id          String   @id @default(uuid())
+    date        DateTime
+    userId      String
+    exerciseId  String
+    durationMin Float
+
+    user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    exercise Exercise @relation(fields: [exerciseId], references: [id])
+}
+
+model WaterLog {
+    id     String   @id @default(uuid())
+    date   DateTime
+    userId String
+    amount Float
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model WeightLog {
+    id       String   @id @default(uuid())
+    date     DateTime
+    userId   String
+    weightKg Float
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Food {
-    id          Int      @id @default(autoincrement())
-    uuid        String   @unique @default(uuid()) // public UUID
+    id          String   @id @default(uuid())
     name        String
     calories    Float
     protein     Float
@@ -79,80 +142,6 @@ model Food {
     updated_at  DateTime @updatedAt
 
     mealItems MealItem[]
-}
-
-model DailyLog {
-    id     Int      @id @default(autoincrement())
-    uuid   String   @unique @default(uuid())
-    date   DateTime
-    userId Int
-
-    user  User   @relation(fields: [userId], references: [id])
-    meals Meal[]
-}
-
-model Meal {
-    id    Int    @id @default(autoincrement())
-    uuid  String @unique @default(uuid())
-    name  String
-    logId Int
-
-    dailyLog DailyLog   @relation(fields: [logId], references: [id])
-    items    MealItem[]
-}
-
-model MealItem {
-    id       Int    @id @default(autoincrement())
-    uuid     String @unique @default(uuid())
-    mealId   Int
-    foodId   Int
-    quantity Float
-
-    meal Meal @relation(fields: [mealId], references: [id])
-    food Food @relation(fields: [foodId], references: [id])
-}
-
-model Exercise {
-    id                   Int      @id @default(autoincrement())
-    uuid                 String   @unique @default(uuid())
-    name                 String
-    caloriesBurnedPerMin Float
-    created_at           DateTime @default(now())
-    updated_at           DateTime @updatedAt
-
-    workoutLogs WorkoutLog[]
-}
-
-model WorkoutLog {
-    id          Int      @id @default(autoincrement())
-    uuid        String   @unique @default(uuid())
-    date        DateTime
-    userId      Int
-    exerciseId  Int
-    durationMin Float
-
-    user     User     @relation(fields: [userId], references: [id])
-    exercise Exercise @relation(fields: [exerciseId], references: [id])
-}
-
-model WaterLog {
-    id     Int      @id @default(autoincrement())
-    uuid   String   @unique @default(uuid())
-    date   DateTime
-    userId Int
-    amount Float
-
-    user User @relation(fields: [userId], references: [id])
-}
-
-model WeightLog {
-    id       Int      @id @default(autoincrement())
-    uuid     String   @unique @default(uuid())
-    date     DateTime
-    userId   Int
-    weightKg Float
-
-    user User @relation(fields: [userId], references: [id])
 }
 
 enum Gender {

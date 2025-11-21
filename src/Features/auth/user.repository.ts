@@ -1,10 +1,8 @@
-import { CreateUser, UserCreateResponse, UserLogin } from "./types/user";
-import { PrismaClient, Profile, UserSession } from "@prisma/client";
+import { CreateUser, UserLogin } from "./types/user";
 import { IAuthRepository } from "./user.interface";
-import { changePhoneNo } from "Features/utils/phone.util";
+import { changePhoneNo } from "../../Features/utils/phone.util";
 import bcrypt from "bcrypt";
-import { randomUUID } from "crypto";
-const prisma = new PrismaClient();
+import { prisma } from "../../config/db.config";
 export class AuthRepository implements IAuthRepository {
 
     async findByEmailOrPhone(emailOrPhone: string): Promise<UserLogin | any> {
@@ -14,7 +12,6 @@ export class AuthRepository implements IAuthRepository {
             },
             select: {
                 id: true,
-                uuid: true,
                 name: true,
                 email: true,
                 phone_no: true,
@@ -31,7 +28,17 @@ export class AuthRepository implements IAuthRepository {
     }
     async createUser(userData: CreateUser): Promise<any> {
         return prisma.user.create({
-            data: userData,
+            data: {
+                email: userData.email,
+                phone_no: userData.phone_no,
+                password: userData.password,
+                name: userData.name,
+                role: {
+                    connect: {
+                        id: userData.roleId ?? "b7f8c6a1-1234-4d5e-9876-abcdef123456" // default UUID for USER role
+                    }
+                },
+            },
         });
     }
     async loginUser(emailOrPhone: string, password: string): Promise<UserLogin | any> {
@@ -41,7 +48,6 @@ export class AuthRepository implements IAuthRepository {
             },
             select: {
                 id: true,
-                uuid: true,
                 name: true,
                 email: true,
                 phone_no: true,
@@ -65,7 +71,7 @@ export class AuthRepository implements IAuthRepository {
 
     async createSession(
         session: string,
-        userId: number,
+        userId: string,
         deviceType: string, // new param
         userAgent?: string,
         userIp?: string,
@@ -73,7 +79,7 @@ export class AuthRepository implements IAuthRepository {
     ): Promise<any> {
         const newSession = await prisma.userSession.create({
             data: {
-                userId: Number(userId),
+                userId: String(userId),
                 device_type: deviceType ?? "web",       // camelCase
                 refreshToken: session,
                 userAgent: userAgent ?? "unknown",     // required
@@ -86,7 +92,7 @@ export class AuthRepository implements IAuthRepository {
         return newSession;
     }
 
-    async getSession(userId: number): Promise<any | null> {
+    async getSession(userId: string): Promise<any | null> {
         return prisma.userSession.findFirst({
             where: { userId },
             orderBy: { createdAt: "desc" },
@@ -95,7 +101,7 @@ export class AuthRepository implements IAuthRepository {
 
     async updateSession(
         session: string,
-        userId: number,
+        userId: string,
         userAgent?: string,
         userIp?: string
     ): Promise<any> {
@@ -122,11 +128,11 @@ export class AuthRepository implements IAuthRepository {
 
             return {
                 id: updated.id,
-                user_id: updated.userId,
-                refresh_token: updated.refreshToken,
+                userId: updated.userId,
+                refreshToken: updated.refreshToken,
                 device_type: updated.device_type,
-                ip_address: updated.ipAddress,
-                created_at: updated.createdAt,
+                ipAddress: updated.ipAddress,
+                createdAt: updated.createdAt,
             };
         } else {
             // Create a new session if none exists
@@ -144,11 +150,11 @@ export class AuthRepository implements IAuthRepository {
 
             return {
                 id: newSession.id,
-                user_id: newSession.userId,
-                refresh_token: newSession.refreshToken,
+                userId: newSession.userId,
+                refreshToken: newSession.refreshToken,
                 device_type: newSession.device_type,
-                ip_address: newSession.ipAddress,
-                created_at: newSession.createdAt,
+                ipAddress: newSession.ipAddress,
+                createdAt: newSession.createdAt,
             };
         }
     }

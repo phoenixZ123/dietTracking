@@ -15,7 +15,7 @@ export const authSchema = {
                             email: { type: "string", description: "User's email", nullable: true },
                             phone_no: { type: "string", description: "User's phone number", nullable: true },
                             password: { type: "string", description: "User's password" },
-                            roleId: { type: "integer", description: "User's role id" }
+                            roleId: { type: "string", description: "User's role id" }
                         }
                     }
                 }
@@ -29,17 +29,17 @@ export const authSchema = {
                         user: {
                             type: "object",
                             properties: {
-                                id: { type: "integer" },
+                                id: { type: "string" },
                                 uuid: { type: "string" },
                                 name: { type: "string" },
                                 email: { type: "string" },
                                 phone_no: { type: "string" },
                                 session: { type: "string" },
-                                roleId: { type: "integer" },
+                                roleId: { type: "string" },
                                 role: {
                                     type: "object",
                                     properties: {
-                                        id: { type: "integer" },
+                                        id: { type: "string" },
                                         name: { type: "string" },
                                     }
                                 }
@@ -84,18 +84,17 @@ export const authSchema = {
                         data: {
                             type: "object",
                             properties: {
-                                id: { type: "integer" },
-                                uuid: { type: "string" },
+                                id: { type: "string" },
                                 name: { type: "string" },
                                 email: { type: "string" },
                                 phone_no: { type: "string" },
                                 password: { type: "string" },
                                 session: { type: "string" },
-                                roleId: { type: "integer" },
+                                roleId: { type: "string" },
                                 role: {
                                     type: "object",
                                     properties: {
-                                        id: { type: "integer" },
+                                        id: { type: "string" },
                                         name: { type: "string" },
                                     }
                                 }
