@@ -1,17 +1,33 @@
 import { useNavigate } from "react-router-dom";
-
+import useAuthStore from "../../store/authStore";
+import { logout } from "../../http/api/auth/logout";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-const SubmitLogOut = () => {
-  localStorage.clear();
-  navigate("/login");
-}
+  const logoutStore = useAuthStore((state) => state.logout);
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-  return <div className="">
-    <div className="text-green-800 text-xl font-bold container m-auto">dashboard</div>
-    <button className="m-10 bg-blue-400 p-3 rounded" onChange={SubmitLogOut}>
-      Log Out</button></div>
-}
+  const handleLogout = async () => {
+    try {
+      await logout(user.token); // call backend
+      logoutStore(); // update Zustand
+      localStorage.removeItem("user"); // clear localStorage
+      navigate("/login"); // redirect
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
 
-export default Dashboard
+  return (
+    <div>
+      <div className="text-green-800 text-xl font-bold container m-auto">
+        Dashboard
+      </div>
+      <button className="m-10 bg-blue-400 p-3 rounded" onClick={handleLogout}>
+        Log Out
+      </button>
+    </div>
+  );
+};
+
+export default Dashboard;
