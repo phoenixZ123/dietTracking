@@ -35,7 +35,7 @@ export class AuthRepository implements IAuthRepository {
                 name: userData.name,
                 role: {
                     connect: {
-                        id: userData.roleId ?? "b7f8c6a1-1234-4d5e-9876-abcdef123456" // default UUID for USER role
+                        id: userData.roleId ?? "424bb4c9-18b4-499c-869b-2120b19bc335" // default UUID for USER role
                     }
                 },
             },
@@ -77,6 +77,7 @@ export class AuthRepository implements IAuthRepository {
         userIp?: string,
         deviceId?: string // optional
     ): Promise<any> {
+
         const newSession = await prisma.userSession.create({
             data: {
                 userId: String(userId),
@@ -93,10 +94,12 @@ export class AuthRepository implements IAuthRepository {
     }
 
     async getSession(userId: string): Promise<any | null> {
-        return prisma.userSession.findFirst({
+        const userSession = await prisma.userSession.findFirst({
             where: { userId },
             orderBy: { createdAt: "desc" },
         });
+
+        return userSession;
     }
 
     async updateSession(
@@ -159,6 +162,17 @@ export class AuthRepository implements IAuthRepository {
         }
     }
 
+
+    async logoutSession(sessionToken: string) {
+        return await prisma.userSession.updateMany({
+            where: { user: { id: sessionToken } },
+            data: {
+                is_online: false,
+                updatedAt: new Date(),
+                last_seen: new Date()
+            }
+        });
+    }
 
 }
 export async function checkPassword(plainPassword: string, hashedPassword: string): Promise<boolean> {

@@ -69,4 +69,26 @@ export class AuthHandler {
         });
 
     }
+    async logout(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            // req.user is set by fastify.authenticate middleware
+            const user = req.user as { id: string };
+            console.log("user", user);
+            if (!user) {
+                return reply
+                    .status(401)
+                    .send({ status: false, message: "Unauthorized" });
+            }
+
+            // call service to update user_sessions
+            await authService.logout(user.id);
+
+            return reply.send({ status: true, message: "Logout success" });
+        } catch (err: any) {
+            return reply.status(500).send({
+                status: false,
+                message: err.message,
+            });
+        }
+    }
 }

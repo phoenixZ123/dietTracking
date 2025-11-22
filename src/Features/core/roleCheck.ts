@@ -6,12 +6,17 @@ export default fp(async (fastify: FastifyInstance) => {
     if (!fastify.hasDecorator("roleCheck")) {
         fastify.decorate(
             "roleCheck",
-            (roles: number[]) =>
+            (roles: string[]) =>
                 async (request: FastifyRequest, reply: FastifyReply) => {
-                    // Extend JwtPayload to include role_id
-                    const user = request.user as JwtPayload & { roleId?: number };
+                    const user = request.user as JwtPayload & { roleId?: string };
 
-                    if (!user || !user.roleId || !roles.includes(user.roleId)) {
+                    // If no user or role missing → forbidden
+                    if (!user?.roleId) {
+                        return reply.status(403).send({ error: "Forbidden" });
+                    }
+
+                    // Check if allowed
+                    if (!roles.includes(user.roleId)) {
                         return reply.status(403).send({ error: "Forbidden" });
                     }
                 }

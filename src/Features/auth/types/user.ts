@@ -10,6 +10,7 @@ export type UserLogin = {
     roleId: number;
     role?: RoleType;
 }
+
 export type CreateUser = {
     id: string;
     email: string | "";

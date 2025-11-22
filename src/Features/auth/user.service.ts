@@ -88,4 +88,9 @@ export class AuthService {
             token: token
         };;
     }
+    async logout(userId: string) {
+        // console.log(sessionToken);
+        return await this.authRepository.logoutSession(userId);
+    }
+
 }

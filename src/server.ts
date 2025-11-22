@@ -1,4 +1,4 @@
-import Fastify, { FastifyInstance } from "fastify";
+import Fastify, { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import * as dotenv from "dotenv";
 import fastifyJwt from "@fastify/jwt";
 import cors from "@fastify/cors";
@@ -27,7 +27,7 @@ const server: FastifyInstance = Fastify({
 
 // JWT
 server.register(fastifyJwt, {
-    secret: process.env.JWT_SECRET || "supersecretkey",
+    secret: process.env.JWT_SECRET || "supersecret", // your JWT secret
     sign: { expiresIn: "1h" },
 });
 
@@ -45,6 +45,28 @@ server.register(roleCheck);
 // URL parsing & multipart
 server.register(fastifyUrlData);
 server.register(multipart, { limits: { fileSize: 2 * 1024 * 1024 * 1024 } });
+
+server.decorate(
+    "authenticate",
+    async (request: FastifyRequest, reply: FastifyReply) => {
+        try {
+            const authHeader = request.headers.authorization;
+            if (!authHeader) throw new Error("No token provided");
+
+            const token = authHeader.split(" ")[1];
+            if (!token) throw new Error("No token provided");
+
+            const decoded = server.jwt.verify(token) as { id: string;[key: string]: any };
+            request.user = decoded;
+        } catch (err) {
+            return reply.status(401).send({ status: false, message: "Unauthorized" });
+        }
+    }
+);
+
+
+
+
 
 // --- Routes ---
 server.register(registerRoutes, { prefix: "/api" });

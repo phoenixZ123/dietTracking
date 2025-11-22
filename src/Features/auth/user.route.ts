@@ -1,4 +1,4 @@
-import fastify, { FastifyInstance } from "fastify";
+import fastify, { FastifyInstance, FastifyRequest } from "fastify";
 import { authSchema } from "./schemas/user.schema";
 import { AuthHandler } from "./user.handler";
 
@@ -9,5 +9,7 @@ export default async function authFunction(fastify: FastifyInstance): Promise<vo
         authHandler.registerUser
     );
     fastify.post("/login", authSchema.login, authHandler.loginUser);
+    fastify.post("/logout", { preHandler: [fastify.authenticate] }, authHandler.logout);
+
 
 }
