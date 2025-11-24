@@ -2,7 +2,8 @@ import { CreateUser, UserLogin } from "./types/user";
 import { IAuthRepository } from "./user.interface";
 import { changePhoneNo } from "../../Features/utils/phone.util";
 import bcrypt from "bcrypt";
-import { prisma } from "../../config/db.config";
+import { prisma } from "config/db.config";
+
 export class AuthRepository implements IAuthRepository {
 
     async findByEmailOrPhone(emailOrPhone: string): Promise<UserLogin | any> {

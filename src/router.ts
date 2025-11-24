@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 
 import AuthRoutes from "./Features/auth/user.route";
+import FoodRoutes from "Features/Food/food.route";
 // import UserRoutes from "./Features/user/user.route";
 // import FoodRoutes from "./Features/food/food.route";
 // import DailyLogRoutes from "./Features/dailyLog/dailyLog.route";
@@ -21,7 +22,7 @@ async function registerRoutes(fastify: FastifyInstance) {
     //   fastify.register(UserRoutes, { prefix: "/users" });
 
     //   // Food & Meals
-    //   fastify.register(FoodRoutes, { prefix: "/foods" });
+    fastify.register(FoodRoutes, { prefix: "/foods" });
     //   fastify.register(MealRoutes, { prefix: "/meals" });
 
     //   // Daily Logs

@@ -2,22 +2,26 @@ import fastify, { FastifyInstance } from "fastify";
 import bcrypt from "bcrypt";
 import { CreateUser, UserLogin } from "./types/user";
 import { RegisterResponse } from "./types/user";
+
 import { AuthRepository } from "./user.repository";
+
 import { changePhoneNo } from "../../Features/utils/phone.util";
 import { hashPassword } from "../../Features/utils/hash";
-import { UserStatus } from "../../Features/shared/constants/userConstraint";
-import { http_status } from "../../Features/shared/constants/http";
 import { JwtPayload } from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import { generateJWT } from "../../Features/utils/auth.util";
+import { IAuthRepository } from "./user.interface";
+
 export class AuthService {
-    private authRepository = new AuthRepository();
+    private authRepository: IAuthRepository;
+
+    constructor() {
+        // Implement interface using repository
+        this.authRepository = new AuthRepository();
+    }
 
     async register(user: CreateUser): Promise<RegisterResponse | any> {
-        const result: RegisterResponse = { status: true, message: "" };
-
         try {
-
             let checkByEmail = null;
             let checkByPhone = null;
 
@@ -47,7 +51,6 @@ export class AuthService {
                 };
             }
 
-            // Fallback if response is somehow falsy
             return {
                 status: false,
                 message: "Failed to create user",
@@ -60,37 +63,56 @@ export class AuthService {
             };
         }
     }
-    async login(fastify: FastifyInstance, emailOrPhone: string, password: string, userAgent?: string,
-        userIp?: string) {
+
+    async login(
+        fastify: FastifyInstance,
+        emailOrPhone: string,
+        password: string,
+        userAgent?: string,
+        userIp?: string
+    ) {
         const user = await this.authRepository.loginUser(emailOrPhone, password);
 
-        const session = await this.authRepository.getSession(user.id);
+        // Session related methods are OUTSIDE the interface & inside repository
+        const session = await (this.authRepository as any).getSession(user.id);
+
         let newSession;
         const uuid = uuidv4();
 
         if (!session) {
-            newSession = await this.authRepository.createSession(uuid, user.id, String(userAgent), userIp);
+            newSession = await (this.authRepository as any).createSession(
+                uuid,
+                user.id,
+                String(userAgent),
+                userIp
+            );
         } else {
-            newSession = await this.authRepository.updateSession(uuid, user.id, userAgent, userIp);
+            newSession = await (this.authRepository as any).updateSession(
+                uuid,
+                user.id,
+                userAgent,
+                userIp
+            );
         }
+
         const payload: JwtPayload = {
             id: user.id,
             uuid: user.uuid,
             name: user.name,
-            session: newSession.refreshToken
+            session: newSession.refreshToken,
         };
 
         const token: object = generateJWT(fastify, payload);
+
         return {
             status: true,
             message: "Login successful",
             data: user,
             token: token
-        };;
-    }
-    async logout(userId: string) {
-        // console.log(sessionToken);
-        return await this.authRepository.logoutSession(userId);
+        };
     }
 
+    async logout(userId: string) {
+        return await (this.authRepository as any).logoutSession(userId);
+    }
 }
