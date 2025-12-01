@@ -22,11 +22,22 @@ export class FoodService {
     }
 
     // Get single food by ID
+    /**
+     * 
+     * @param id - get food id
+     * @returns - return food data
+     */
     async getFood(id: string): Promise<Food | null> {
         return this.foodRepository.getFoodById(id);
     }
 
     // Update food
+    /**
+     * 
+     * @param id - want to update food id
+     * @param data - update food data
+     * @returns 
+     */
     async updateFood(
         id: string,
         data: Partial<Omit<Food, "id" | "created_at" | "updated_at">>
@@ -35,6 +46,11 @@ export class FoodService {
     }
 
     // Delete food
+    /**
+     * 
+     * @param id - want to delete food id
+     * @returns 
+     */
     async deleteFood(id: string): Promise<Food> {
         return this.foodRepository.deleteFood(id);
     }

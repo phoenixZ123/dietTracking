@@ -7,11 +7,11 @@ export default async function foodRoutes(fastify: FastifyInstance) {
 
     fastify.post("/create", handler.create);
 
-    fastify.get("/foods", handler.list);
+    fastify.get("/all", handler.list);
 
-    fastify.get("/foods/:id", handler.get);
+    fastify.get("/fid/:id", handler.get);
 
-    fastify.put("/foods/:id", handler.update);
+    fastify.put("/update/:id", handler.update);
 
     fastify.delete("/foods/:id", handler.delete);
 }

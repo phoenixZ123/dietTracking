@@ -15,14 +15,14 @@ export class FoodHandler {
         try {
             const food = await foodService.createFood(req.body);
             return reply.send({
-                status: true,
+                success: true,
                 message: "Food created successfully",
                 data: food
             });
         } catch (err) {
             return reply
                 .status(http_status.InternalServerError)
-                .send({ status: false, message: String(err) });
+                .send({ success: false, message: String(err) });
         }
     }
 
@@ -30,11 +30,11 @@ export class FoodHandler {
     async list(req: FastifyRequest, reply: FastifyReply) {
         try {
             const foods = await foodService.getFoods();
-            return reply.send({ status: true, data: foods });
+            return reply.send({ success: true, data: foods });
         } catch (err) {
             return reply
                 .status(http_status.InternalServerError)
-                .send({ status: false, message: String(err) });
+                .send({ success: false, message: String(err) });
         }
     }
 
@@ -46,13 +46,13 @@ export class FoodHandler {
         try {
             const food = await foodService.getFood(req.params.id);
             if (!food) {
-                return reply.status(http_status.NotFound).send({ status: false, message: "Food not found" });
+                return reply.status(http_status.NotFound).send({ success: false, message: "Food not found" });
             }
-            return reply.send({ status: true, data: food });
+            return reply.send({ success: true, message: "Get food detail successfully", data: food });
         } catch (err) {
             return reply
                 .status(http_status.InternalServerError)
-                .send({ status: false, message: String(err) });
+                .send({ success: false, message: String(err) });
         }
     }
 
@@ -63,11 +63,11 @@ export class FoodHandler {
     ) {
         try {
             const updated = await foodService.updateFood(req.params.id, req.body);
-            return reply.send({ status: true, data: updated });
+            return reply.send({ success: true, message: "Food update successfully", data: updated });
         } catch (err) {
             return reply
                 .status(http_status.InternalServerError)
-                .send({ status: false, message: String(err) });
+                .send({ success: false, message: String(err) });
         }
     }
 
@@ -78,11 +78,11 @@ export class FoodHandler {
     ) {
         try {
             await foodService.deleteFood(req.params.id);
-            return reply.send({ status: true, message: "Food deleted successfully" });
+            return reply.send({ success: true, message: "Food deleted successfully" });
         } catch (err) {
             return reply
                 .status(http_status.InternalServerError)
-                .send({ status: false, message: String(err) });
+                .send({ success: false, message: String(err) });
         }
     }
 }
