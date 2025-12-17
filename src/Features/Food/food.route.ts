@@ -1,17 +1,13 @@
 import { FastifyInstance } from "fastify";
 import { FoodHandler } from "./food.handler";
-
-const handler = new FoodHandler();
+import { foodSchema } from "./schemas/food.schema";
 
 export default async function foodRoutes(fastify: FastifyInstance) {
+  const foodHandler = new FoodHandler(fastify);
 
-    fastify.post("/create", handler.create);
-
-    fastify.get("/all", handler.list);
-
-    fastify.get("/fid/:id", handler.get);
-
-    fastify.put("/update/:id", handler.update);
-
-    fastify.delete("/foods/:id", handler.delete);
+  fastify.post(
+    "/create",
+   foodSchema.create,
+    foodHandler.createFood
+  );
 }

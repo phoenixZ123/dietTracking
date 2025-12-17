@@ -12,10 +12,10 @@ export const authSchema = {
                         properties: {
                             name: { type: "string", description: "User's name" },
                             dob: { type: "string", description: "User's date of birth" },
-                            email: { type: "string", description: "User's email", nullable: true },
-                            phone_no: { type: "string", description: "User's phone number", nullable: true },
+                            email: { type: "string", description: "User's email" },
+                            phone_no: { type: "string", description: "User's phone number" },
                             password: { type: "string", description: "User's password" },
-                            roleId: { type: "string", description: "User's role id" }
+                            roleId: { type: "integer", description: "User's role id" }
                         }
                     }
                 }
@@ -29,17 +29,17 @@ export const authSchema = {
                         user: {
                             type: "object",
                             properties: {
-                                id: { type: "string" },
+                                id: { type: "integer" },
                                 uuid: { type: "string" },
                                 name: { type: "string" },
                                 email: { type: "string" },
                                 phone_no: { type: "string" },
                                 session: { type: "string" },
-                                roleId: { type: "string" },
+                                roleId: { type: "integer" },
                                 role: {
                                     type: "object",
                                     properties: {
-                                        id: { type: "string" },
+                                        id: { type: "integer" },
                                         name: { type: "string" },
                                     }
                                 }
@@ -84,17 +84,19 @@ export const authSchema = {
                         data: {
                             type: "object",
                             properties: {
-                                id: { type: "string" },
+                                id: { type: "integer" },
+                                uuid: { type: "string" },
                                 name: { type: "string" },
                                 email: { type: "string" },
                                 phone_no: { type: "string" },
+                                is_online:{type:"boolean"},
                                 password: { type: "string" },
                                 session: { type: "string" },
-                                roleId: { type: "string" },
+                                roleId: { type: "integer" },
                                 role: {
                                     type: "object",
                                     properties: {
-                                        id: { type: "string" },
+                                        id: { type: "integer" },
                                         name: { type: "string" },
                                     }
                                 }

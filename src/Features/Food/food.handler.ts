@@ -1,88 +1,31 @@
-import { FastifyRequest, FastifyReply } from "fastify";
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { FoodService } from "./food.service";
-import { http_status } from "Features/shared/constants/http";
-import { Food } from "@prisma/client";
+import {  foodSchema } from "./schemas/food.schema";
+import { ResponseFood } from "./types/food.type";
+import { FromSchema } from "json-schema-to-ts";
 
-const foodService = new FoodService();
-
+export type CreateFoodBody = FromSchema<
+  typeof foodSchema.create.schema.body
+>;
 export class FoodHandler {
+    private foodService: FoodService;
 
-    // Create a new food
-    async create(
-        req: FastifyRequest<{ Body: Omit<Food, "id" | "created_at" | "updated_at"> }>,
+    constructor(private fastify: FastifyInstance) {
+        this.foodService = new FoodService();
+    }
+
+    createFood = async (
+        request: FastifyRequest<{ Body: CreateFoodBody}>,
         reply: FastifyReply
-    ) {
-        try {
-            const food = await foodService.createFood(req.body);
-            return reply.send({
-                success: true,
-                message: "Food created successfully",
-                data: food
-            });
-        } catch (err) {
-            return reply
-                .status(http_status.InternalServerError)
-                .send({ success: false, message: String(err) });
-        }
-    }
+    ):Promise<ResponseFood> => {
+        const foodData = request.body;
 
-    // List all foods
-    async list(req: FastifyRequest, reply: FastifyReply) {
-        try {
-            const foods = await foodService.getFoods();
-            return reply.send({ success: true, data: foods });
-        } catch (err) {
-            return reply
-                .status(http_status.InternalServerError)
-                .send({ success: false, message: String(err) });
-        }
-    }
+        const food = await this.foodService.foodCreate(foodData);
+        return {
+            success: true,
+            message: "Food Created Successfully",
+            food
+        };
 
-    // Get single food by ID
-    async get(
-        req: FastifyRequest<{ Params: { id: string } }>,
-        reply: FastifyReply
-    ) {
-        try {
-            const food = await foodService.getFood(req.params.id);
-            if (!food) {
-                return reply.status(http_status.NotFound).send({ success: false, message: "Food not found" });
-            }
-            return reply.send({ success: true, message: "Get food detail successfully", data: food });
-        } catch (err) {
-            return reply
-                .status(http_status.InternalServerError)
-                .send({ success: false, message: String(err) });
-        }
-    }
-
-    // Update food by ID
-    async update(
-        req: FastifyRequest<{ Params: { id: string }; Body: Partial<Omit<Food, "id" | "created_at" | "updated_at">> }>,
-        reply: FastifyReply
-    ) {
-        try {
-            const updated = await foodService.updateFood(req.params.id, req.body);
-            return reply.send({ success: true, message: "Food update successfully", data: updated });
-        } catch (err) {
-            return reply
-                .status(http_status.InternalServerError)
-                .send({ success: false, message: String(err) });
-        }
-    }
-
-    // Delete food by ID
-    async delete(
-        req: FastifyRequest<{ Params: { id: string } }>,
-        reply: FastifyReply
-    ) {
-        try {
-            await foodService.deleteFood(req.params.id);
-            return reply.send({ success: true, message: "Food deleted successfully" });
-        } catch (err) {
-            return reply
-                .status(http_status.InternalServerError)
-                .send({ success: false, message: String(err) });
-        }
-    }
+    };
 }
