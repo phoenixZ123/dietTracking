@@ -7,13 +7,13 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Role {
-    id         String   @id @default(uuid())
-    name       String   @unique
-    users      User[] // relation, no onDelete here
-    created_at DateTime @default(now())
-    isActive   Boolean  @default(true)
-}
+// model Role {
+//     id         String   @id @default(uuid())
+//     name       String   @unique
+//     users      User[] // relation, no onDelete here
+//     created_at DateTime @default(now())
+//     isActive   Boolean  @default(true)
+// }
 
 model User {
     id       String  @id @default(uuid())
@@ -21,8 +21,8 @@ model User {
     phone_no String? @unique
     password String
     name     String
-    roleId   String
-    role     Role    @relation(fields: [roleId], references: [id], onDelete: Cascade)
+    // roleId   String
+    // role     Role    @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
@@ -33,6 +33,7 @@ model User {
     waterLogs   WaterLog[]
     weightLogs  WeightLog[]
     userSession UserSession?
+    food        Food[]
 }
 
 model UserSession {
@@ -140,6 +141,9 @@ model Food {
     servingSize Float
     created_at  DateTime @default(now())
     updated_at  DateTime @updatedAt
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     mealItems MealItem[]
 }

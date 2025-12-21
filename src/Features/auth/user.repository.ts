@@ -17,13 +17,13 @@ export class AuthRepository implements IAuthRepository {
                 email: true,
                 phone_no: true,
                 password: true,
-                roleId: true,
-                role: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                }
+                // roleId: true,
+                // role: {
+                //     select: {
+                //         id: true,
+                //         name: true,
+                //     },
+                // }
             },
         });
     }
@@ -34,11 +34,11 @@ export class AuthRepository implements IAuthRepository {
                 phone_no: userData.phone_no,
                 password: userData.password,
                 name: userData.name,
-                role: {
-                    connect: {
-                        id: userData.roleId ?? "424bb4c9-18b4-499c-869b-2120b19bc335" // default UUID for USER role
-                    }
-                },
+                // role: {
+                //     connect: {
+                //         id: userData.roleId ?? "424bb4c9-18b4-499c-869b-2120b19bc335" // default UUID for USER role
+                //     }
+                // },
             },
         });
     }
@@ -53,11 +53,11 @@ export class AuthRepository implements IAuthRepository {
                 email: true,
                 phone_no: true,
                 password: true,
-                role: {
-                    select: {
-                        name: true, // get the role name
-                    }
-                }
+                // role: {
+                //     select: {
+                //         name: true, // get the role name
+                //     }
+                // }
             },
 
         });

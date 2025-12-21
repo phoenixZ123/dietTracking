@@ -64,10 +64,6 @@ server.decorate(
     }
 );
 
-
-
-
-
 // --- Routes ---
 server.register(registerRoutes, { prefix: "/api" });
 
