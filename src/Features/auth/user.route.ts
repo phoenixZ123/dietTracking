@@ -9,7 +9,7 @@ export default async function authFunction(fastify: FastifyInstance): Promise<vo
         authHandler.registerUser
     );
     fastify.post("/login", authSchema.login, authHandler.loginUser);
-    fastify.post("/logout", { preHandler: [fastify.authenticate] }, authHandler.logout);
+    fastify.post("/logout", authHandler.logout);
 
 
 }

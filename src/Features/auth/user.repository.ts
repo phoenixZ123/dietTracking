@@ -61,7 +61,6 @@ export class AuthRepository implements IAuthRepository {
             },
 
         });
-
         if (!user) return { status: false, message: "User not found" };
 
         const isValid = await checkPassword(password, user.password);
@@ -99,7 +98,6 @@ export class AuthRepository implements IAuthRepository {
             where: { userId },
             orderBy: { createdAt: "desc" },
         });
-
         return userSession;
     }
 

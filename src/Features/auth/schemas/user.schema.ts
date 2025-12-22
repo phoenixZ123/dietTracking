@@ -84,7 +84,7 @@ export const authSchema = {
                         data: {
                             type: "object",
                             properties: {
-                                id: { type: "integer" },
+                                id: { type: "string" },
                                 uuid: { type: "string" },
                                 name: { type: "string" },
                                 email: { type: "string" },

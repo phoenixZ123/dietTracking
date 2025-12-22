@@ -55,7 +55,7 @@ export class AuthHandler {
                 .send({ status: false, message: "Please provide a valid password!" });
         }
         logger.info(`Logging in user with ${emailOrPhone}`);
-        console.log("password", password);
+        // console.log("password", password);
         const data = await authService.login(req.server, emailOrPhone, password);
         if (data.status === false) {
             return res.status(400).send({ status: false, message: data.message });
@@ -73,7 +73,7 @@ export class AuthHandler {
         try {
             // req.user is set by fastify.authenticate middleware
             const user = req.user as { id: string };
-            console.log("user", user);
+            // console.log("user", user);
             if (!user) {
                 return reply
                     .status(401)

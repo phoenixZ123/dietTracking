@@ -1,7 +1,7 @@
 import { RoleType } from "./roleType";
 
 export type UserLogin = {
-    id: number;
+    id: string;
     uuid: string;
     name: string;
     email: string | "";
@@ -20,7 +20,7 @@ export type CreateUser = {
     roleId?: string;
 }
 export interface UserCreateResponse {
-    id: number;
+    id: string;
     uuid: string;
     name: string;
     email: string | "";
