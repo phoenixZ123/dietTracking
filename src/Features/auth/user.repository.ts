@@ -1,8 +1,9 @@
-import { CreateUser, UserLogin } from "./types/user";
+import { CreateUser, ProfileResponse, UserLogin } from "./types/user";
 import { IAuthRepository } from "./user.interface";
 import { changePhoneNo } from "../../Features/utils/phone.util";
 import bcrypt from "bcrypt";
 import { prisma } from "config/db.config";
+import { User } from "@prisma/client";
 
 export class AuthRepository implements IAuthRepository {
 
@@ -28,19 +29,45 @@ export class AuthRepository implements IAuthRepository {
         });
     }
     async createUser(userData: CreateUser): Promise<any> {
-        return prisma.user.create({
-            data: {
-                email: userData.email,
-                phone_no: userData.phone_no,
-                password: userData.password,
-                name: userData.name,
-                // role: {
-                //     connect: {
-                //         id: userData.roleId ?? "424bb4c9-18b4-499c-869b-2120b19bc335" // default UUID for USER role
-                //     }
-                // },
-            },
+        // return prisma.user.create({
+        //     data: {
+        //         email: userData.email,
+        //         phone_no: userData.phone_no,
+        //         password: userData.password,
+        //         name: userData.name,
+        //         // role: {
+        //         //     connect: {
+        //         //         id: userData.roleId ?? "424bb4c9-18b4-499c-869b-2120b19bc335" // default UUID for USER role
+        //         //     }
+        //         // },
+        //     },
+        // });
+        const result = await prisma.$transaction(async (tx) => {
+            const user = await tx.user.create({
+                data: {
+                    email: userData.email,
+                    phone_no: userData.phone_no,
+                    password: userData.password,
+                    name: userData.name,
+                },
+            });
+
+            await tx.profile.create({
+                data: {
+                    userId: user.id,
+                },
+            });
+
+            return tx.user.findUnique({
+                where: { id: user.id },
+                include: {
+                    profiles: true,
+                },
+            });
         });
+
+        return result;
+
     }
     async loginUser(emailOrPhone: string, password: string): Promise<UserLogin | any> {
         const user = await prisma.user.findFirst({
@@ -69,6 +96,21 @@ export class AuthRepository implements IAuthRepository {
         return user;
     }
 
+    async getProfile(userId: string): Promise<any> {
+        const result = await prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+                id: true,
+                email: true,
+                phone_no: true,
+                name: true,
+                created_at:true,
+                updated_at:true,
+                profiles: true,
+            },
+        });
+        return result;
+    }
     async createSession(
         session: string,
         userId: string,
@@ -160,7 +202,6 @@ export class AuthRepository implements IAuthRepository {
             };
         }
     }
-
 
     async logoutSession(sessionToken: string) {
         return await prisma.userSession.updateMany({

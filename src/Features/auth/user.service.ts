@@ -111,6 +111,21 @@ export class AuthService {
             token: token
         };
     }
+    /**
+     * 
+     * @param userId - authentication id
+     * @returns - return user profile
+     */
+    async getProfileService(userId: string) {
+        try {
+            return this.authRepository.getProfile(userId);
+        } catch (error: any) {
+            return {
+                status: false,
+                message: error.message || "Error creating user",
+            };
+        }
+    }
 
     async logout(userId: string) {
         return await (this.authRepository as any).logoutSession(userId);

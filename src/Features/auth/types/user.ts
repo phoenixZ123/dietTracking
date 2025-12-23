@@ -7,7 +7,7 @@ export type UserLogin = {
     email: string | "";
     phone_no: string | "";
     password: string;
-    roleId: number;
+    roleId?: number;
     role?: RoleType;
 }
 
@@ -32,4 +32,28 @@ export interface RegisterResponse {
     message?: string;
     data?: UserCreateResponse;
     // token?: object;
+}
+export interface Profile {
+    id: string;
+    userId: string;
+    age?: number | null;
+    gender?: string | null;
+    height?: number | null;
+    weight?: number | null;
+    goal?: string | null;
+}
+
+export interface ProfileResponse {
+    User: UserLogin;
+    Profile: Profile;
+}
+
+export type UpdateUser = {
+    name: string;
+    phone_no: string | "";
+     age?: number | null;
+    gender?: string | null;
+    height?: number | null;
+    weight?: number | null;
+    goal?: string | null;
 }

@@ -40,7 +40,13 @@ export class AuthHandler {
             });
         }
     }
-    async loginUser(req: FastifyRequest<{ Body: { emailOrPhone: string; password: string } }>, res: FastifyReply) {
+
+    async loginUser(req: FastifyRequest<{
+        Body: {
+            emailOrPhone: string;
+            password: string
+        }
+    }>, res: FastifyReply) {
         const emailOrPhone = req.body.emailOrPhone;
         const password = req.body.password;
 
@@ -69,6 +75,24 @@ export class AuthHandler {
         });
 
     }
+
+    async getProfile(req: FastifyRequest, rep: FastifyReply) {
+        const user = req.user as { id: string };
+        const userId = user.id;
+        const profile = await authService.getProfileService(userId);
+        if (profile.length < 0 || !userId) {
+            return {
+                success: false,
+                message: "User Profile Not Found"
+            }
+        }
+        return {
+            success: true,
+            message: "User Profile Detail",
+            profile
+        }
+    }
+
     async logout(req: FastifyRequest, reply: FastifyReply) {
         try {
             // req.user is set by fastify.authenticate middleware
