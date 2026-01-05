@@ -34,6 +34,8 @@ model User {
     weightLogs  WeightLog[]
     userSession UserSession?
     food        Food[]
+    items    MealItem[]
+
 }
 
 model UserSession {
@@ -87,9 +89,15 @@ model MealItem {
     mealId   String
     foodId   String
     quantity Float
+    userId   String
 
     meal Meal @relation(fields: [mealId], references: [id], onDelete: Cascade)
     food Food @relation(fields: [foodId], references: [id])
+    user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime  @updatedAt
+
 }
 
 model Exercise {
