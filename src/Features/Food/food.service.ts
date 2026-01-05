@@ -1,11 +1,10 @@
 import { prisma } from "config/db.config";
-import { Food } from "./entities/food.entity";
 import { ResponseFood } from "./types/food.type";
+import { CreateFoodBody } from "./schemas/food.schema";
 
-type CreateFoodInput = Omit<Food, "id" | "uuid" | "created_at" | "updated_at" | "mealItems">;
 
 export class FoodService {
-  async foodCreate(foodData: CreateFoodInput, userId: string): Promise<ResponseFood | any> {
+  async foodCreate(foodData: CreateFoodBody, userId: string): Promise<ResponseFood | any> {
     try {
       const food = await prisma.food.create({
         data: {

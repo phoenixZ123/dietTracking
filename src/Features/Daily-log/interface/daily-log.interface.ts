@@ -1,5 +1,5 @@
 import { Meal } from "@prisma/client";
-import { createDailyLog, CreateMealInput, DailyLogResponse } from "./type/dailylog";
+import { createDailyLog, CreateMealInput, DailyLogResponse } from "../type/dailylog";
 
 export interface IDailyLogRepository {
 createDailyLog(data: createDailyLog, userId: string): Promise<any>;

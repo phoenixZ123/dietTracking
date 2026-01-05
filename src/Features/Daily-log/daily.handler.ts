@@ -53,7 +53,12 @@ export class DailyLogHandler {
             date,
             user.id
         );
-
+        if (dailylog == null) {
+            return {
+                success: false,
+                message: "Daily Log Not Found"
+            }
+        }
         return {
             success: true,
             message: "Get DailyLog successfully.",

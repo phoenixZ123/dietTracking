@@ -1,5 +1,5 @@
 import { DailyLog, Meal } from "@prisma/client";
-import { IDailyLogRepository } from "./daily-log.interface";
+import { IDailyLogRepository } from "./interface/daily-log.interface";
 import { prisma } from "config/db.config";
 import { createDailyLog, CreateMealInput, DailyLogResponse } from "./type/dailylog";
 

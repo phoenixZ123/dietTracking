@@ -1,5 +1,5 @@
 import { CreateUser, ProfileResponse, UserLogin } from "./types/user";
-import { IAuthRepository } from "./user.interface";
+import { IAuthRepository } from "./interface/user.interface";
 import { changePhoneNo } from "../../Features/utils/phone.util";
 import bcrypt from "bcrypt";
 import { prisma } from "config/db.config";

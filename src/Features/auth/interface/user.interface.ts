@@ -1,5 +1,5 @@
 import { User } from "@prisma/client";
-import { CreateUser, ProfileResponse, UserCreateResponse, UserLogin } from "./types/user";
+import { CreateUser, ProfileResponse, UserCreateResponse, UserLogin } from "../types/user";
 
 export interface IAuthRepository {
     findByEmailOrPhone(emailOrPhone: string): Promise<UserLogin | null>;

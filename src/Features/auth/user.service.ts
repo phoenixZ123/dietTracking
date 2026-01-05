@@ -10,7 +10,7 @@ import { hashPassword } from "../../Features/utils/hash";
 import { JwtPayload } from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import { generateJWT } from "../../Features/utils/auth.util";
-import { IAuthRepository } from "./user.interface";
+import { IAuthRepository } from "./interface/user.interface";
 
 export class AuthService {
     private authRepository: IAuthRepository;
