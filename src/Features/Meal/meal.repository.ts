@@ -28,17 +28,38 @@ export class mealRepository implements IMealRepository {
         if (meal.length == 0) return null;
         return meal;
     }
-    async getUserDailyMeal(mealId: string,
-        userId: string): Promise<MealItem[] | any> {
-        const meal_item = prisma.mealItem.findMany({
+    async getUserDailyMeal(mealId: string, userId: string) {
+        const mealItems = await prisma.mealItem.findMany({
             where: {
-                AND: { user: { id: userId } }, meal: { id: mealId }
-            }, include: {
+                userId,
+                mealId
+            },
+            include: {
                 food: true,
-                meal: true,
-                user: true
+                meal: { select: { name: true, dailyLog: { select: { date: true } } } },
             }
         });
-        return meal_item;
+
+        // Calculate calories per meal item
+        const mealItemsWithCalories = mealItems.map(item => {
+            const itemCalories = (item.quantity / item.food.servingSize) * item.food.calories;
+            return {
+                ...item,
+                calories: itemCalories
+            };
+        });
+
+        // Calculate total calories for the meal
+        const totalCalories = mealItemsWithCalories.reduce((sum, item) => sum + item.calories, 0);
+
+        // Return in one clean scope
+        return {
+            mealId,
+            mealName: mealItems[0]?.meal.name ?? null,
+            date: mealItems[0]?.meal.dailyLog.date ?? null,
+            totalCalories,
+            items: mealItemsWithCalories // optional: include each item if you want
+        };
     }
+
 }
