@@ -1,9 +1,9 @@
-import { CreateUser, ProfileResponse, UserLogin } from "./types/user";
+import { CreateUser, ProfileResponse, UpdateProfile, UserLogin } from "./types/user";
 import { IAuthRepository } from "./interface/user.interface";
 import { changePhoneNo } from "../../Features/utils/phone.util";
 import bcrypt from "bcrypt";
 import { prisma } from "config/db.config";
-import { User } from "@prisma/client";
+import { Profile, User } from "@prisma/client";
 
 export class AuthRepository implements IAuthRepository {
 
@@ -61,7 +61,7 @@ export class AuthRepository implements IAuthRepository {
             return tx.user.findUnique({
                 where: { id: user.id },
                 include: {
-                    profiles: true,
+                    profile: true,
                 },
             });
         });
@@ -104,13 +104,31 @@ export class AuthRepository implements IAuthRepository {
                 email: true,
                 phone_no: true,
                 name: true,
-                created_at:true,
-                updated_at:true,
-                profiles: true,
+                created_at: true,
+                updated_at: true,
+                profile: true,
             },
         });
         return result;
     }
+
+    async updateProfile(
+        data: UpdateProfile,
+        userId: string
+    ): Promise<Profile> {
+
+       
+        const profile = await prisma.profile.update({
+            where: {
+                userId: userId   // ✅ must be a unique field
+            },
+             data,
+            include: { user: true }
+        });
+
+        return profile;
+    }
+
     async createSession(
         session: string,
         userId: string,

@@ -1,6 +1,6 @@
 import fastify, { FastifyInstance } from "fastify";
 import bcrypt from "bcrypt";
-import { CreateUser, UserLogin } from "./types/user";
+import { CreateUser, UpdateProfile, UserLogin } from "./types/user";
 import { RegisterResponse } from "./types/user";
 
 import { AuthRepository } from "./user.repository";
@@ -11,6 +11,7 @@ import { JwtPayload } from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import { generateJWT } from "../../Features/utils/auth.util";
 import { IAuthRepository } from "./interface/user.interface";
+import { Profile } from "@prisma/client";
 
 export class AuthService {
     private authRepository: IAuthRepository;
@@ -126,7 +127,13 @@ export class AuthService {
             };
         }
     }
-
+    async updateProfileService(data: UpdateProfile, userId: string) {
+        try {
+            return this.authRepository.updateProfile(data, userId);
+        } catch (err: any) {
+            console.error("Error Update Profile :", err.message);
+        }
+    }
     async logout(userId: string) {
         return await (this.authRepository as any).logoutSession(userId);
     }

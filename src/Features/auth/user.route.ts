@@ -11,5 +11,5 @@ export default async function authFunction(fastify: FastifyInstance): Promise<vo
     fastify.post("/login", authSchema.login, authHandler.loginUser);
     fastify.post("/logout", authHandler.logout);
     fastify.get("/profile", authHandler.getProfile)
-
+    fastify.put("/update-profile", authHandler.updateProfileHandler);
 }

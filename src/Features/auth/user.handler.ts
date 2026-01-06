@@ -1,8 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { http_status } from "../../Features/shared/constants/http";
 import { AuthService } from "./user.service";
-import { CreateUser } from "./types/user";
+import { CreateUser, UpdateProfile } from "./types/user";
 import logger from "../../Features/core/logger";
+import { Profile } from "@prisma/client";
 
 const authService = new AuthService();
 
@@ -79,8 +80,8 @@ export class AuthHandler {
     async getProfile(req: FastifyRequest, rep: FastifyReply) {
         const user = req.user as { id: string };
         const userId = user.id;
-        const profile = await authService.getProfileService(userId);
-        if (profile.length < 0 || !userId) {
+        const data = await authService.getProfileService(userId);
+        if (data.length < 0 || !userId) {
             return {
                 success: false,
                 message: "User Profile Not Found"
@@ -89,10 +90,31 @@ export class AuthHandler {
         return {
             success: true,
             message: "User Profile Detail",
-            profile
+            data
         }
     }
-
+    async updateProfileHandler(req: FastifyRequest<{ Body: { data: UpdateProfile } }>, res: FastifyReply): Promise<any> {
+        try {
+            const user = req.user as { id: string };
+            const data = req.body.data;
+            if (!data) {
+                return res.status(http_status.BadRequest).send({
+                    success: false,
+                    message: "Data Fields are required"
+                })
+            }
+            const profile = await authService.updateProfileService(data, user.id);
+            if (profile) {
+                return res.status(http_status.Success).send({
+                    success: true,
+                    message: "Profile Updated Successfully",
+                    profile
+                })
+            }
+        } catch (err: any) {
+            console.error("Error Update Profile", err.message)
+        }
+    }
     async logout(req: FastifyRequest, reply: FastifyReply) {
         try {
             // req.user is set by fastify.authenticate middleware

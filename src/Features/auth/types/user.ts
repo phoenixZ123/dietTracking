@@ -1,3 +1,4 @@
+import { ActivityLevel, Gender } from "@prisma/client";
 import { RoleType } from "./roleType";
 
 export type UserLogin = {
@@ -38,20 +39,29 @@ export interface Profile {
     userId: string;
     age?: number | null;
     gender?: string | null;
-    height?: number | null;
-    weight?: number | null;
-    goal?: string | null;
+    heightCm?: number | null;
+    weightKg?: number | null;
+    goalWeight?: string | null;
 }
 
 export interface ProfileResponse {
     User: UserLogin;
     Profile: Profile;
 }
+export type UpdateProfile = {
+    gender?: Gender;
+    birthDate?: Date;
+    heightCm?: number;
+    weightKg?: number;
+    goalWeight?: number;
+    activityLevel?:ActivityLevel;
+
+}
 
 export type UpdateUser = {
     name: string;
     phone_no: string | "";
-     age?: number | null;
+    age?: number | null;
     gender?: string | null;
     height?: number | null;
     weight?: number | null;
