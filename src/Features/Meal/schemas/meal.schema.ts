@@ -17,7 +17,7 @@ export const mealItemSchema = {
           },
           quantity: {
             type: "number",
-            minimum: 1,
+            minimum: 0.01,
           },
         },
         additionalProperties: false,

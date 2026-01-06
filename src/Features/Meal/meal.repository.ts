@@ -1,6 +1,6 @@
 import { prisma } from "../../config/db.config";
 import { IMealRepository } from "./interface/meal.interface";
-import { Meal } from "@prisma/client";
+import { Meal, MealItem } from "@prisma/client";
 
 export class mealRepository implements IMealRepository {
 
@@ -28,5 +28,17 @@ export class mealRepository implements IMealRepository {
         if (meal.length == 0) return null;
         return meal;
     }
-
+    async getUserDailyMeal(mealId: string,
+        userId: string): Promise<MealItem[] | any> {
+        const meal_item = prisma.mealItem.findMany({
+            where: {
+                AND: { user: { id: userId } }, meal: { id: mealId }
+            }, include: {
+                food: true,
+                meal: true,
+                user: true
+            }
+        });
+        return meal_item;
+    }
 }

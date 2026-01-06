@@ -57,6 +57,8 @@ export class dailyLogRepository implements IDailyLogRepository {
         };
     }
 
-
+    async getDateByUserId(userId: string): Promise<DailyLog[]> {
+        return prisma.dailyLog.findMany({ where: { user: { id: userId } }, include: { user: true, meals: true } })
+    }
 }
 

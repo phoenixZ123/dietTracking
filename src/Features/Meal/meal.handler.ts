@@ -13,7 +13,7 @@ export class MealHandler {
             foodId: string,
             quantity: number
         }
-    }>,res:FastifyReply): Promise<any> {
+    }>, res: FastifyReply): Promise<any> {
         const user = req.user as { id: string };
         const data = req.body;
 
@@ -25,11 +25,11 @@ export class MealHandler {
         const ui = prisma.user.findUnique({ where: { id: user.id } });
         if (!mealdata || !food || !ui) {
             return res.status(http_status.BadRequest).send({
-                success:false,
-                message:"Cannot create cuz of data required"
+                success: false,
+                message: "Cannot create cuz of data required"
             })
         }
-        const mealItem =await mealService.createMeal(data, user.id);
+        const mealItem = await mealService.createMeal(data, user.id);
         return {
             success: true,
             message: "Meal Created Successfully",
@@ -62,5 +62,28 @@ export class MealHandler {
             message: "Get Meal Successfully",
             meals
         }
+    }
+    async getUserDailyMeal(req: FastifyRequest<{ Querystring: { mealId: string } }>, res: FastifyReply) {
+        const user = req.user as { id: string };
+        const mealId = req.query.mealId;
+        if (!mealId) {
+            return res.status(http_status.BadRequest).send({
+                success: false,
+                message: "Meal Id required"
+            })
+        }
+        const mealItem = await mealService.getUserDailyMeal(mealId, user.id);
+        if (!mealItem) {
+            res.status(http_status.Forbidden).send({
+                success: false,
+                message: "Meal Not Found"
+            })
+        }
+        return res.status(http_status.Success).send({
+            success: true,
+            message: "Get Meal Item Successfully",
+            mealItem
+        })
+
     }
 }
