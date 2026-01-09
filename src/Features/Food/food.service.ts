@@ -29,4 +29,27 @@ export class FoodService {
     const food = prisma.food.findMany();
     return food;
   }
+  async getSuggestionFood(name: string): Promise<Food[]> {
+    const foods = await prisma.food.findMany({
+      where: {
+        OR: [
+          {
+            name: {
+              startsWith: name,   // starts with input
+              mode: "insensitive"
+            }
+          },
+          {
+            name: {
+              equals: name,       // full word match
+              mode: "insensitive"
+            }
+          }
+        ]
+      },
+      take: 20 // optional: limit results
+    });
+
+    return foods;
+  }
 }

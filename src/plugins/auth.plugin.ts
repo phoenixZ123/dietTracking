@@ -5,6 +5,7 @@ import { http_status } from "Features/shared/constants/http";
 const publicRoutes = [
   "/api/auth/login",
   "/api/auth/register",
+  "/api/food/search"
 ];
 
 export default fp(async (fastify) => {

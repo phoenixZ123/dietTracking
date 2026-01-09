@@ -42,4 +42,19 @@ export class FoodHandler {
             })
         }
     }
+    getSuggestionFood = async (req: FastifyRequest<{ Querystring: { name: string } }>, res: FastifyReply) => {
+        const name = req.query.name;
+        const foods = await this.foodService.getSuggestionFood(name);
+        if (foods.length <= 0) {
+            return res.status(http_status.BadRequest).send({
+                success: false,
+                message: "Foods Are Empty",
+            })
+        }
+        return res.status(http_status.Success).send({
+            success: true,
+            message: "Foods Suggestion successfully",
+            foods
+        })
+    }
 }
