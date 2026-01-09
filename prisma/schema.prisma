@@ -59,7 +59,7 @@ model Profile {
     gender      Gender?
     birthDate   DateTime?
     heightCm    Float?
-    weightKg    Float?
+    weightLb    Float?
     goalWeight  Float?
     activityLvl ActivityLevel @default(MEDIUM)
 
@@ -119,6 +119,9 @@ model WorkoutLog {
 
     user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     exercise Exercise @relation(fields: [exerciseId], references: [id])
+
+    created_at           DateTime @default(now())
+    updated_at           DateTime @updatedAt
 }
 
 model WaterLog {

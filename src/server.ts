@@ -31,7 +31,7 @@ server.register(fastifyJwt, {
     secret: process.env.JWT_SECRET || "supersecret", // your JWT secret
     sign: { expiresIn: "1h" },
 });
-await server.register(authPlugin); 
+await server.register(authPlugin);
 // CORS
 server.register(cors, {
     origin: "*",

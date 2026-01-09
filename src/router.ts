@@ -4,6 +4,7 @@ import AuthRoutes from "./Features/auth/user.route";
 import FoodRoutes from "Features/Food/food.route";
 import dailyLogRoute from "Features/Daily-log/daily-log.route";
 import MealRoute from "Features/Meal/meal.route";
+import ExerciseRoute from "Features/Exercise/exercise.route";
 // import UserRoutes from "./Features/user/user.route";
 // import FoodRoutes from "./Features/food/food.route";
 // import DailyLogRoutes from "./Features/dailyLog/dailyLog.route";
@@ -31,7 +32,7 @@ async function registerRoutes(fastify: FastifyInstance) {
   fastify.register(dailyLogRoute, { prefix: "/daily-logs" });
 
   //   // Fitness Tracking
-  //   fastify.register(ExerciseRoutes, { prefix: "/exercises" });
+    fastify.register(ExerciseRoute, { prefix: "/exercise" });
   //   fastify.register(WorkoutLogRoutes, { prefix: "/workouts" });
 
   //   // Hydration & Weight Tracking
