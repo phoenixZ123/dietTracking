@@ -45,4 +45,25 @@ export class ExerciseHandler {
             workOutLog
         })
     }
+    async getDailyBurnedHandler(req: FastifyRequest, res: FastifyReply): Promise<any> {
+        const user = req.user as { id: string };
+        if (!user) {
+            res.status(http_status.Unauthorized).send({
+                success: false,
+                message: "User Unauthorized"
+            })
+        }
+        const calories = await exerciseService.getDailyBurnedService(user.id);
+        if (calories.length <= 0) {
+            res.status(http_status.NotFound).send({
+                success: false,
+                message: "Not Burned Yet"
+            })
+        }
+        return res.status(http_status.Success).send({
+            success: true,
+            message: "User Burned Calories Successfully",
+            calories
+        })
+    }
 }

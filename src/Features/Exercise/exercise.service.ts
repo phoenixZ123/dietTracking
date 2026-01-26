@@ -28,4 +28,7 @@ export class ExerciseService {
     async getDailyExercise(userId: string) {
         return this.exerciseRepository.getDailyExercisesScopeMultiDay(userId);
     }
+    async getDailyBurnedService(userId: string) {
+        return this.exerciseRepository.getDailyBurnedCalories(userId);
+    }
 }

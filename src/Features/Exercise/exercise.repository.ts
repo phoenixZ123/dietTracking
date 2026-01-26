@@ -3,6 +3,12 @@ import { IExerciseRepository } from "./interface/exercise.interface";
 import { createExercise, UserWorkOutLog } from "./types/exercise";
 import { Exercise, WorkoutLog } from "@prisma/client";
 
+interface caloriesResponse{
+    date: Date;
+    exercise?:string;
+    burnedCalories: number;
+    totalDuration:number;
+}
 export class ExerciseRepository implements IExerciseRepository {
     async createExercise(exerciseData: createExercise): Promise<Exercise> {
         const exercise = prisma.exercise.create({
@@ -28,6 +34,23 @@ export class ExerciseRepository implements IExerciseRepository {
             }
         });
         return workoutLog;
+    }
+    async getDailyBurnedCalories(userId: string): Promise<caloriesResponse[]> {
+        // Fetch all workout logs for the user
+        const logs = await prisma.workoutLog.findMany({
+            where: { userId },
+            orderBy: { date: "desc" },
+            include: { exercise: true, user: true }
+        });
+        
+        // Map each log to include its burned calories and date
+        const result = logs.map(log => ({
+            date: log.date,
+            exercise:log.exercise.name,
+            burnedCalories: log.exercise.caloriesBurnedPerMin * log.durationMin,
+            totalDuration:log.durationMin
+        }));
+        return result;
     }
     async getDailyExercisesScopeMultiDay(userId: string): Promise<any> {
         const logs = await prisma.workoutLog.findMany({
