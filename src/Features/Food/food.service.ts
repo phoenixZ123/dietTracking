@@ -1,55 +1,23 @@
 import { prisma } from "config/db.config";
-import { ResponseFood } from "./types/food.type";
+import { IFoodRepository } from "./food.interface";
+import { foodRepository } from "./food.repository";
 import { CreateFoodBody } from "./schemas/food.schema";
 import { Food } from "@prisma/client";
 
 
 export class FoodService {
-  async foodCreate(
-    foodData: CreateFoodBody | CreateFoodBody[],
-    userId: string
-  ): Promise<ResponseFood | any> {
-    try {
-      const foods = Array.isArray(foodData) ? foodData : [foodData];
-      const foodsWithUser: any = foods.map(f => ({ ...f, userId }));
-
-      const createdFoods = await Promise.all(
-        foodsWithUser.map((food: any) => prisma.food.create({ data: food }))
-      );
-      return {
-        count: createdFoods.length,
-        data: Array.isArray(foodData) ? createdFoods : createdFoods[0]
-      };
-    } catch (error) {
-      console.error("Error creating food:", error);
-      throw error;
-    }
+  private foodRepository: IFoodRepository;
+  constructor() {
+    this.foodRepository = new foodRepository();
   }
-  async getFood(): Promise<any> {
-    const food = prisma.food.findMany();
-    return food;
+  async createFood(foodData: CreateFoodBody | CreateFoodBody[],
+    userId: string): Promise<any> {
+    return this.foodRepository.foodCreate(foodData, userId);
   }
-  async getSuggestionFood(name: string): Promise<Food[]> {
-    const foods = await prisma.food.findMany({
-      where: {
-        OR: [
-          {
-            name: {
-              startsWith: name,   // starts with input
-              mode: "insensitive"
-            }
-          },
-          {
-            name: {
-              equals: name,       // full word match
-              mode: "insensitive"
-            }
-          }
-        ]
-      },
-      take: 20 // optional: limit results
-    });
-
-    return foods;
+  async getSuggestFoodService(name: string): Promise<Food[] | any> {
+    return this.foodRepository.getSuggestionFood(name);
+  }
+  async getFoodService(page:number,limit:number) {
+    return this.foodRepository.getFood(page,limit);
   }
 }

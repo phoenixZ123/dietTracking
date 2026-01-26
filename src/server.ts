@@ -10,7 +10,7 @@ import swaggerUi from "@fastify/swagger-ui";
 import logger from "./Features/core/logger";
 import roleCheck from "./Features/core/roleCheck";
 import registerRoutes from "./router";
-import authPlugin from "plugins/auth.plugin";
+import authPlugin from "plugins/authPlugin";
 
 dotenv.config();
 

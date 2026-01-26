@@ -8,6 +8,10 @@ import { http_status } from "Features/shared/constants/http";
 export type CreateFoodBody = FromSchema<
     typeof foodSchema.create.schema.body
 >;
+type foodParams = {
+    page: number;
+    limit: number;
+}
 export class FoodHandler {
     private foodService: FoodService;
 
@@ -20,11 +24,21 @@ export class FoodHandler {
         reply: FastifyReply
     ): Promise<ResponseFood> => {
         const foodData = request.body;
-        // console.log("user id",request.user.id);
+        if (!foodData) {
+            return reply.status(http_status.BadRequest).send({
+                success: false,
+                message: "Food Data Required!"
+            })
+        }
         const user = request.user as { id: string };
-
+        if (!user) {
+            return reply.status(http_status.Unauthorized).send({
+                success: false,
+                message: "User Not Authenticated!"
+            })
+        }
         const userId = user.id;
-        const food = await this.foodService.foodCreate(foodData, userId); // ✅ use userId
+        const food = await this.foodService.createFood(foodData, userId); // ✅ use userId
 
         return {
             success: true,
@@ -32,19 +46,41 @@ export class FoodHandler {
             food
         };
     };
-    getfood = async (req: FastifyRequest, res: FastifyReply) => {
-        const food = await this.foodService.getFood();
-        if (food.length > 0) {
+    getfood = async (
+        req: FastifyRequest<{ Params: foodParams }>,
+        res: FastifyReply
+    ) => {
+        const { page, limit } = req.params;
+
+        const food = await this.foodService.getFoodService(page, limit);
+
+        const foods = food.foods;
+        const meta = food.meta;
+
+        if (foods.length > 0) {
             return res.status(http_status.Success).send({
                 success: true,
                 message: "Get Food Successfully",
-                food
-            })
+                data: {
+                    foods,
+                    meta,
+                },
+            });
         }
-    }
+
+        return res.status(http_status.NotFound).send({
+            success: false,
+            message: "No food found",
+            data: {
+                data: [],
+                meta,
+            },
+        });
+    };
+
     getSuggestionFood = async (req: FastifyRequest<{ Querystring: { name: string } }>, res: FastifyReply) => {
         const name = req.query.name;
-        const foods = await this.foodService.getSuggestionFood(name);
+        const foods = await this.foodService.getSuggestFoodService(name);
         if (foods.length <= 0) {
             return res.status(http_status.BadRequest).send({
                 success: false,
