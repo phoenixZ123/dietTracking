@@ -15,11 +15,11 @@ export class MealHandler {
         }
     }>, res: FastifyReply): Promise<any> {
         const user = req.user as { id: string };
-        const data = req.body;
+        const body = req.body;
 
-        const mealdata = prisma.meal.findUnique({ where: { id: data.mealId } });
+        const mealdata = prisma.meal.findUnique({ where: { id: body.mealId } });
 
-        const food = prisma.food.findUnique({ where: { id: data.foodId } });
+        const food = prisma.food.findUnique({ where: { id: body.foodId } });
 
         // Validate user exists
         const ui = prisma.user.findUnique({ where: { id: user.id } });
@@ -29,11 +29,11 @@ export class MealHandler {
                 message: "Cannot create cuz of data required"
             })
         }
-        const mealItem = await mealService.createMeal(data, user.id);
+        const data = await mealService.createMeal(body, user.id);
         return {
             success: true,
             message: "Meal Created Successfully",
-            mealItem
+            data
         }
     }
 

@@ -35,6 +35,7 @@ model User {
     userSession UserSession?
     food        Food[]
     items    MealItem[]
+    caloriesLogs CaloriesLog[] 
 
 }
 
@@ -82,6 +83,7 @@ model Meal {
 
     dailyLog DailyLog   @relation(fields: [logId], references: [id], onDelete: Cascade)
     items    MealItem[]
+    caloriesLogs CaloriesLog[]
 }
 
 model MealItem {
@@ -151,6 +153,7 @@ model Food {
     fat         Float
     servingSize Float
     unit        Unit    //g or ml
+    food_image  String?  
     created_at  DateTime @default(now())
     updated_at  DateTime @updatedAt
 
@@ -159,6 +162,27 @@ model Food {
 
     mealItems MealItem[]
 }
+
+model CaloriesLog {
+  id            String   @id @default(uuid())
+  userId        String
+  mealId        String?
+  date          DateTime
+  meal          String
+  foodName      String
+  quantity      Float
+  totalCalories Float
+  totalProtein  Float?
+  totalCarbs    Float?
+  totalFat      Float?
+  createdAt     DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mealRelation  Meal? @relation(fields: [mealId], references: [id], onDelete: Cascade)
+}
+
+
 
 enum Unit {
   g

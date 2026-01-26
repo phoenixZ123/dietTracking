@@ -6,7 +6,8 @@ const publicRoutes = [
   "/api/auth/login",
   "/api/auth/register",
   "/api/food/search",
-  "/api/food/get-food"
+  "/api/food/get-food",
+  "/api/auth/users"
 ];
 
 export default fp(async (fastify) => {

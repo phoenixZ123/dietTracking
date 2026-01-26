@@ -11,7 +11,7 @@ import { JwtPayload } from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import { generateJWT } from "../../Features/utils/auth.util";
 import { IAuthRepository } from "./interface/user.interface";
-import { Profile } from "@prisma/client";
+import { Profile, User } from "@prisma/client";
 
 export class AuthService {
     private authRepository: IAuthRepository;
@@ -133,6 +133,9 @@ export class AuthService {
         } catch (err: any) {
             console.error("Error Update Profile :", err.message);
         }
+    }
+    async getUserService(): Promise<any> {
+        return this.authRepository.getUser();
     }
     async logout(userId: string) {
         return await (this.authRepository as any).logoutSession(userId);

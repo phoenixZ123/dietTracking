@@ -51,6 +51,19 @@ export class AuthRepository implements IAuthRepository {
                     name: userData.name,
                 },
             });
+            await tx.dailyLog.create({
+                data: {
+                    date: new Date(),
+                    userId: user.id,
+                    meals: {
+                        create: [
+                            { name: "Breakfast" },
+                            { name: "Lunch" },
+                            { name: "Dinner" },
+                        ],
+                    },
+                }
+            })
 
             await tx.profile.create({
                 data: {
@@ -62,6 +75,7 @@ export class AuthRepository implements IAuthRepository {
                 where: { id: user.id },
                 include: {
                     profile: true,
+                    dailyLogs: true
                 },
             });
         });
@@ -95,7 +109,10 @@ export class AuthRepository implements IAuthRepository {
 
         return user;
     }
-
+    async getUser(): Promise<User[]> {
+        const result: any = await getUsers(1, 8);
+        return result;
+    }
     async getProfile(userId: string): Promise<any> {
         const result = await prisma.user.findUnique({
             where: { id: userId },
@@ -117,12 +134,12 @@ export class AuthRepository implements IAuthRepository {
         userId: string
     ): Promise<Profile> {
 
-       
+
         const profile = await prisma.profile.update({
             where: {
                 userId: userId   // ✅ must be a unique field
             },
-             data,
+            data,
             include: { user: true }
         });
 
@@ -235,4 +252,44 @@ export class AuthRepository implements IAuthRepository {
 }
 export async function checkPassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
     return await bcrypt.compare(plainPassword, hashedPassword);
+}
+
+async function getUsers(page: number = 1, limit: number = 8) {
+    // Ensure page is at least 1
+    const pageNumber = Math.max(1, page);
+
+    // Calculate how many records to skip
+    const skip = (pageNumber - 1) * limit;
+
+    // Fetch users with pagination
+    const users = await prisma.user.findMany({
+        skip,
+        take: limit,
+        orderBy: { created_at: "desc" },
+        include: {
+            profile: true,
+            dailyLogs: true,
+            workoutLogs: true,
+            waterLogs: true,
+            weightLogs: true,
+            items: true,
+            caloriesLogs: true,
+            userSession: true
+        }
+    });
+
+    // Optionally, get total count for meta info
+    const total = await prisma.user.count();
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+        data: users,
+        meta: {
+            total,
+            page: pageNumber,
+            limit,
+            totalPages
+        }
+    };
 }

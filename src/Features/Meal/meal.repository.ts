@@ -9,19 +9,67 @@ export class mealRepository implements IMealRepository {
         userId: string
     ): Promise<any> {
 
-        // Create MealItem with relations
-        return prisma.mealItem.create({
+        const { mealId, foodId, quantity } = data;
+
+        // 1️⃣ Fetch the food
+        const food = await prisma.food.findUnique({
+            where: { id: foodId }
+        });
+        if (!food) throw new Error("Food not found");
+
+        // 2️⃣ Fetch the Meal with its DailyLog to get the date
+        const meal = await prisma.meal.findUnique({
+            where: { id: mealId },
+            include: {
+                dailyLog: true
+            }
+        });
+        if (!meal) throw new Error("Meal not found");
+
+        const logDate = meal.dailyLog.date; // Use the DailyLog's date
+
+        // 3️⃣ Calculate nutrition based on quantity
+        const factor = quantity / food.servingSize;
+        const totalCalories = food.calories * factor;
+        const totalProtein = food.protein * factor;
+        const totalCarbs = food.carbs * factor;
+        const totalFat = food.fat * factor;
+
+        // 4️⃣ Create MealItem
+        const mealItem = await prisma.mealItem.create({
             data: {
-                ...data,
+                mealId,
+                foodId,
+                quantity,
                 userId,
             },
             include: {
                 meal: true,
                 food: true,
                 user: true,
+
             },
         });
+
+        // 5️⃣ Insert into CaloriesLog using DailyLog's date
+        const caloriesLog = await prisma.caloriesLog.create({
+            data: {
+                userId,
+                mealId,
+                date: logDate,           // <-- important change
+                meal: meal.name,
+                foodName: food.name,
+                quantity,
+                totalCalories,
+                totalProtein,
+                totalCarbs,
+                totalFat,
+            },
+        });
+
+        return { mealItem, caloriesLog };
     }
+
 
     async getMeal(logId: string): Promise<any> {
         const meal = await prisma.meal.findMany({ where: { logId } })

@@ -7,7 +7,8 @@ export interface IAuthRepository {
     loginUser(emailOrPhone: string, password: string): Promise<UserLogin | any>;
     getProfile(userId: string): Promise<any>;
     updateProfile(
-            data: UpdateProfile,
-            userId: string
-        ): Promise<Profile>;
+        data: UpdateProfile,
+        userId: string
+    ): Promise<Profile>;
+    getUser(): Promise<User[]>;
 }
