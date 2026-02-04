@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "@/store/authStore";
 
@@ -9,11 +9,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { GetProfile } from "@/http/api/dashboard/profile";
 
 interface Profile {
   gender?: string;
   heightCm?: number;
-  weightKg?: number;
+  weightLb?: number;
   goalWeight?: number;
   activityLvl?: string;
 }
@@ -40,13 +41,14 @@ interface DailyLog {
 }
 
 // Fake data
-const fakeProfile: Profile = {
-  gender: "Male",
-  heightCm: 175,
-  weightKg: 70,
-  goalWeight: 68,
-  activityLvl: "Medium",
-};
+
+// const fakeProfile: Profile = {
+//   gender: "Male",
+//   heightCm: 175,
+//   weightLb: 70,
+//   goalWeight: 68,
+//   activityLvl: "Medium",
+// };
 
 const fakeDailyLogs: DailyLog[] = [
   {
@@ -108,10 +110,11 @@ const fakeDailyLogs: DailyLog[] = [
 ];
 
 const Dashboard = () => {
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const navigate = useNavigate();
   const logoutStore = useAuthStore((state) => state.logout);
 
-  const [profile] = useState<Profile>(fakeProfile);
   const [dailyLogs] = useState<DailyLog[]>(fakeDailyLogs);
 
   const handleLogout = () => {
@@ -140,6 +143,25 @@ const Dashboard = () => {
     return acc;
   }, 0);
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await GetProfile();
+        // backend shape:
+        // res.data.profile
+        // localStorage.setItem("token", response.data.token);
+
+        console.log(response);
+        setProfile(response.data.profile);
+      } catch (error) {
+        console.error("Failed to load profile", error);
+      } finally {
+        setLoadingProfile(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
   return (
     <div className="container m-auto p-5 space-y-6">
       <div className="flex justify-between items-center">
@@ -190,13 +212,15 @@ const Dashboard = () => {
         <CardHeader>
           <CardTitle className="text-lg font-semibold">Profile</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-1">
-          <p>Gender: {profile.gender}</p>
-          <p>Height: {profile.heightCm} cm</p>
-          <p>Weight: {profile.weightKg} kg</p>
-          <p>Goal Weight: {profile.goalWeight} kg</p>
-          <p>Activity Level: {profile.activityLvl}</p>
-        </CardContent>
+        {loadingProfile ? <div>Loading ...</div> : <CardContent className="space-y-1">
+          <p>Gender: {profile?.gender ?? "-"}</p>
+          <p>Height: {profile?.heightCm ?? "-"} cm</p>
+          <p>Weight: {profile?.weightLb ?? "-"} lb</p>
+          <p>Goal Weight: {profile?.goalWeight ?? "-"}</p>
+          <p>Activity Level: {profile?.activityLvl ?? "-"}</p>
+        </CardContent>}
+
+
       </Card>
 
       {/* Daily Logs Tabs */}

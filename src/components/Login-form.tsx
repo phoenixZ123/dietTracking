@@ -53,7 +53,9 @@ export function LoginForm({
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const res = await loginMutation(values);
-
+      if (res.data.success) {
+        localStorage.setItem("token", res.data.token.access); // save access token
+      }
       if (res.status === true) {
         loginStore({
           user: {
