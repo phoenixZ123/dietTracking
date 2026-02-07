@@ -25,8 +25,10 @@ const config = {
         accessKey: process.env.MINIO_ACCESS_KEY,
         secretKey: process.env.MINIO_SECRET_KEY,
         region: process.env.MINIO_REGION,
-        useSSL: false,
-        bucketName: process.env.MINIO_BUCKET_NAME
+        useSSL: process.env.MINIO_USE_SSL === "true",
+        bucketName: process.env.MINIO_BUCKET_NAME,
+        endPointWithoutPort: process.env.MINIO_ENDPOINT_WITHOUT_PORT,
+
     }
     //   cors: {
     //     domain: {

@@ -1,5 +1,5 @@
 import { DailyLog, Meal } from "@prisma/client";
-import { IDailyLogRepository } from "./daily-log.interface";
+import { IDailyLogRepository } from "./interface/daily-log.interface";
 import { prisma } from "config/db.config";
 import { createDailyLog, CreateMealInput, DailyLogResponse } from "./type/dailylog";
 
@@ -57,6 +57,8 @@ export class dailyLogRepository implements IDailyLogRepository {
         };
     }
 
-
+    async getDateByUserId(userId: string): Promise<DailyLog[]> {
+        return prisma.dailyLog.findMany({ where: { user: { id: userId } }, include: { user: true, meals: true } })
+    }
 }
 

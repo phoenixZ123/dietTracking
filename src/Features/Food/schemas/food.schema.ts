@@ -10,19 +10,33 @@ const foodProperties = {
   carbs: { type: "number", minimum: 0 },
   fat: { type: "number", minimum: 0 },
   servingSize: { type: "number", minimum: 0 },
+  unit: { type: "string", enum: ["g", "ml"] }, // 👈 ADD THIS
 } as const;
+
 
 /**
  * FOOD SCHEMA (ONE SCOPE, MANY CRUD)
  */
 export const foodSchema = {
-  create: {
+   create: {
     schema: {
       tags: ["Food"],
       body: {
-        type: "object",
-        required: ["name", "calories", "protein", "carbs", "fat", "servingSize"],
-        properties: foodProperties,
+        anyOf: [
+          {
+            type: "object",
+            required: ["name", "calories", "protein", "carbs", "fat", "servingSize", "unit"],
+            properties: foodProperties,
+          },
+          {
+            type: "array",
+            items: {
+              type: "object",
+              required: ["name", "calories", "protein", "carbs", "fat", "servingSize", "unit"],
+              properties: foodProperties,
+            }
+          }
+        ]
       },
       response: {
         201: {
@@ -30,19 +44,36 @@ export const foodSchema = {
           properties: {
             success: { type: "boolean" },
             data: {
-              type: "object",
-              properties: {
-                id: { type: "number" },
-                uuid: { type: "string" },
-                ...foodProperties,
-                created_at: { type: "string" },
-                updated_at: { type: "string" },
-              },
-            },
-          },
-        },
-      },
-    },
+              anyOf: [
+                {
+                  type: "object",
+                  properties: {
+                    id: { type: "number" },
+                    uuid: { type: "string" },
+                    ...foodProperties,
+                    created_at: { type: "string" },
+                    updated_at: { type: "string" },
+                  }
+                },
+                {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      id: { type: "number" },
+                      uuid: { type: "string" },
+                      ...foodProperties,
+                      created_at: { type: "string" },
+                      updated_at: { type: "string" },
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
   },
 
   update: {

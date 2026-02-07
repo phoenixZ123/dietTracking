@@ -53,12 +53,33 @@ export class DailyLogHandler {
             date,
             user.id
         );
-
+        if (dailylog == null) {
+            return {
+                success: false,
+                message: "Daily Log Not Found"
+            }
+        }
         return {
             success: true,
             message: "Get DailyLog successfully.",
             dailylog,
         };
+    }
+    async getDateUserId(req: FastifyRequest, res: FastifyReply) {
+        const user = req.user as { id: string };
+        if (!user) {
+            return res.status(http_status.Unauthorized).send({
+                success: false,
+                message: "User need to authorize"
+            })
+        }
+        const date = await this.dailyLogService.getDateByUId(user.id);
+        return res.status(http_status.Success).send({
+            success: true,
+            message: "Get User 's dailylog date successfully",
+            date
+        })
+
     }
 
 }

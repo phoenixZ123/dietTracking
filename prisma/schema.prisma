@@ -27,13 +27,15 @@ model User {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
-    profile     Profile?
-    dailyLogs   DailyLog[]
-    workoutLogs WorkoutLog[]
-    waterLogs   WaterLog[]
-    weightLogs  WeightLog[]
-    userSession UserSession?
-    food        Food[]
+    profile      Profile?
+    dailyLogs    DailyLog[]
+    workoutLogs  WorkoutLog[]
+    waterLogs    WaterLog[]
+    weightLogs   WeightLog[]
+    userSession  UserSession?
+    food         Food[]
+    items        MealItem[]
+    caloriesLogs CaloriesLog[]
 }
 
 model UserSession {
@@ -58,6 +60,7 @@ model Profile {
     birthDate   DateTime?
     heightCm    Float?
     weightLb    Float?
+    weightLb    Float?
     goalWeight  Float?
     activityLvl ActivityLevel @default(MEDIUM)
 
@@ -78,8 +81,9 @@ model Meal {
     name  String
     logId String
 
-    dailyLog DailyLog   @relation(fields: [logId], references: [id], onDelete: Cascade)
-    items    MealItem[]
+    dailyLog     DailyLog      @relation(fields: [logId], references: [id], onDelete: Cascade)
+    items        MealItem[]
+    caloriesLogs CaloriesLog[]
 }
 
 model MealItem {
@@ -87,9 +91,14 @@ model MealItem {
     mealId   String
     foodId   String
     quantity Float
+    userId   String
 
     meal Meal @relation(fields: [mealId], references: [id], onDelete: Cascade)
     food Food @relation(fields: [foodId], references: [id])
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model Exercise {
@@ -111,6 +120,9 @@ model WorkoutLog {
 
     user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     exercise Exercise @relation(fields: [exerciseId], references: [id])
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
 }
 
 model WaterLog {
@@ -131,6 +143,7 @@ model WeightLog {
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+//food base in 100
 model Food {
     id          String   @id @default(uuid())
     name        String
@@ -139,6 +152,8 @@ model Food {
     carbs       Float
     fat         Float
     servingSize Float
+    unit        Unit //g or ml
+    food_image  String?
     created_at  DateTime @default(now())
     updated_at  DateTime @updatedAt
 
@@ -146,6 +161,30 @@ model Food {
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     mealItems MealItem[]
+}
+
+model CaloriesLog {
+    id            String   @id @default(uuid())
+    userId        String
+    mealId        String?
+    date          DateTime
+    meal          String
+    foodName      String
+    quantity      Float
+    totalCalories Float
+    totalProtein  Float?
+    totalCarbs    Float?
+    totalFat      Float?
+    createdAt     DateTime @default(now())
+    updated_at    DateTime @updatedAt
+
+    user         User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+    mealRelation Meal? @relation(fields: [mealId], references: [id], onDelete: Cascade)
+}
+
+enum Unit {
+    g
+    ml
 }
 
 enum Gender {

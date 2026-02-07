@@ -1,6 +1,6 @@
 import fastify, { FastifyInstance } from "fastify";
 import bcrypt from "bcrypt";
-import { CreateUser, UserLogin } from "./types/user";
+import { CreateUser, UpdateProfile, UserLogin } from "./types/user";
 import { RegisterResponse } from "./types/user";
 
 import { AuthRepository, UpdateProfileBody } from "./user.repository";
@@ -13,6 +13,7 @@ import { generateJWT } from "../../Features/utils/auth.util";
 import { IAuthRepository } from "./user.interface";
 import { UpdateFoodBody } from "Features/Food/schemas/food.schema";
 import { Profile } from "@prisma/client";
+import { User } from "@prisma/client";
 
 export class AuthService {
     private authRepository: IAuthRepository;
@@ -128,16 +129,17 @@ export class AuthService {
             };
         }
     }
-    async updateProfileService(updateData: UpdateProfileBody, userId: string): Promise<Profile | any> {
+
+    async updateProfileService(data: UpdateProfileBody, userId: string) {
         try {
-            return this.authRepository.updateProfile(updateData, userId);
+            return this.authRepository.updateProfile(data, userId);
         } catch (err: any) {
-            return {
-                status: false,
-                message: err.message || "Error update user profile",
-            };
+            console.error("Error Update Profile :", err.message);
         }
     }
+    // async getUserService(): Promise<any> {
+    //     return this.authRepository.getUser();
+    // }
     async logout(userId: string) {
         return await (this.authRepository as any).logoutSession(userId);
     }

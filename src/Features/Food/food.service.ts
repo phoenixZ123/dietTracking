@@ -1,23 +1,23 @@
 import { prisma } from "config/db.config";
-import { Food } from "./entities/food.entity";
-import { ResponseFood } from "./types/food.type";
+import { IFoodRepository } from "./food.interface";
+import { foodRepository } from "./food.repository";
+import { CreateFoodBody } from "./schemas/food.schema";
+import { Food } from "@prisma/client";
 
-type CreateFoodInput = Omit<Food, "id" | "uuid" | "created_at" | "updated_at" | "mealItems">;
 
 export class FoodService {
-  async foodCreate(foodData: CreateFoodInput, userId: string): Promise<ResponseFood | any> {
-    try {
-      const food = await prisma.food.create({
-        data: {
-          ...foodData,  // all fields like name, calories, protein, etc.
-          userId,       // UUID of logged-in user
-        }
-      });
-      return food;
-    } catch (error) {
-      console.error("Error creating food:", error);
-      throw error; // or return a structured error
-    }
+  private foodRepository: IFoodRepository;
+  constructor() {
+    this.foodRepository = new foodRepository();
   }
-
+  async createFood(foodData: CreateFoodBody | CreateFoodBody[],
+    userId: string): Promise<any> {
+    return this.foodRepository.foodCreate(foodData, userId);
+  }
+  async getSuggestFoodService(name: string): Promise<Food[] | any> {
+    return this.foodRepository.getSuggestionFood(name);
+  }
+  async getFoodService(page:number,limit:number) {
+    return this.foodRepository.getFood(page,limit);
+  }
 }

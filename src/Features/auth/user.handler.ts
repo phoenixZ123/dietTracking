@@ -1,9 +1,10 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { http_status } from "../../Features/shared/constants/http";
 import { AuthService } from "./user.service";
-import { CreateUser } from "./types/user";
+import { CreateUser, UpdateProfile } from "./types/user";
 import logger from "../../Features/core/logger";
 import { UpdateProfileBody } from "./user.repository";
+import { Profile } from "@prisma/client";
 
 const authService = new AuthService();
 
@@ -75,6 +76,14 @@ export class AuthHandler {
             token: data.token
         });
 
+    }
+    async getUser(req: FastifyRequest, rep: FastifyReply) {
+        const users = await authService.getUserService();
+        return rep.status(http_status.Success).send({
+            success: true,
+            message: "Get User Successfully",
+            users
+        })
     }
 
     async getProfile(req: FastifyRequest, rep: FastifyReply) {

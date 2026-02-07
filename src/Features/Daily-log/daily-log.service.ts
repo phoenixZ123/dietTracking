@@ -1,5 +1,5 @@
-import { Meal } from "@prisma/client";
-import { IDailyLogRepository } from "./daily-log.interface";
+import { DailyLog, Meal } from "@prisma/client";
+import { IDailyLogRepository } from "./interface/daily-log.interface";
 import { dailyLogRepository } from "./daily-log.repository";
 import { createDailyLog, CreateMealInput, DailyLogResponse } from "./type/dailylog";
 
@@ -30,7 +30,13 @@ export class dailyLogService {
             return this.dailyLogRepository.getDailyLog(date, userId);
         } catch (error) {
             console.error("Error get dailylog:", error);
-            throw error; // or return a structured error
+        }
+    }
+    async getDateByUId(userId: string): Promise<DailyLog[] | any> {
+        try {
+            return this.dailyLogRepository.getDateByUserId(userId);
+        } catch (err: any) {
+            console.error("Error get user dailylog:", err.message);
         }
     }
 

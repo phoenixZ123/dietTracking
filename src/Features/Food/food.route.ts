@@ -7,7 +7,9 @@ export default async function foodRoutes(fastify: FastifyInstance) {
 
   fastify.post(
     "/create",
-   foodSchema.create,
+    foodSchema.create,
     foodHandler.createFood
   );
+  fastify.get("/get-food/:page/:limit", foodHandler.getfood);
+  fastify.get("/search", foodHandler.getSuggestionFood);
 }
