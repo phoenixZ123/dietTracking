@@ -1,4 +1,9 @@
 import { RoleType } from "./roleType";
+export enum ActivityLevel {
+    LOW = "LOW",
+    MEDIUM = "MEDIUM",
+    HIGH = "HIGH"
+}
 
 export type UserLogin = {
     id: string;
@@ -51,7 +56,7 @@ export interface ProfileResponse {
 export type UpdateUser = {
     name: string;
     phone_no: string | "";
-     age?: number | null;
+    age?: number | null;
     gender?: string | null;
     height?: number | null;
     weight?: number | null;

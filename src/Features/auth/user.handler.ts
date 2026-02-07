@@ -3,6 +3,7 @@ import { http_status } from "../../Features/shared/constants/http";
 import { AuthService } from "./user.service";
 import { CreateUser } from "./types/user";
 import logger from "../../Features/core/logger";
+import { UpdateProfileBody } from "./user.repository";
 
 const authService = new AuthService();
 
@@ -79,8 +80,8 @@ export class AuthHandler {
     async getProfile(req: FastifyRequest, rep: FastifyReply) {
         const user = req.user as { id: string };
         const userId = user.id;
-        const profile = await authService.getProfileService(userId);
-        if (profile.length < 0 || !userId) {
+        const userProfile = await authService.getProfileService(userId);
+        if (userProfile.length < 0 || !userId) {
             return {
                 success: false,
                 message: "User Profile Not Found"
@@ -89,10 +90,33 @@ export class AuthHandler {
         return {
             success: true,
             message: "User Profile Detail",
-            profile
+            userProfile
         }
     }
 
+    async updateProfile(req: FastifyRequest<{ Body: UpdateProfileBody }>, rep: FastifyReply) {
+        const user = req.user as { id: string };
+        const userId = user.id;
+        if (!userId) {
+            return {
+                success: false,
+                message: "User Not Authenticate"
+            }
+        }
+        const updateData = req.body;
+        if (!updateData) {
+            return rep.status(http_status.BadRequest).send({
+                success: false,
+                message: "update data fields are required"
+            })
+        }
+        const updated = await authService.updateProfileService(updateData, userId);
+        return {
+            success: true,
+            message: "Updated Profile Successfully",
+            updateData
+        }
+    }
     async logout(req: FastifyRequest, reply: FastifyReply) {
         try {
             // req.user is set by fastify.authenticate middleware

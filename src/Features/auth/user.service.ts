@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import { CreateUser, UserLogin } from "./types/user";
 import { RegisterResponse } from "./types/user";
 
-import { AuthRepository } from "./user.repository";
+import { AuthRepository, UpdateProfileBody } from "./user.repository";
 
 import { changePhoneNo } from "../../Features/utils/phone.util";
 import { hashPassword } from "../../Features/utils/hash";
@@ -11,6 +11,8 @@ import { JwtPayload } from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import { generateJWT } from "../../Features/utils/auth.util";
 import { IAuthRepository } from "./user.interface";
+import { UpdateFoodBody } from "Features/Food/schemas/food.schema";
+import { Profile } from "@prisma/client";
 
 export class AuthService {
     private authRepository: IAuthRepository;
@@ -122,11 +124,20 @@ export class AuthService {
         } catch (error: any) {
             return {
                 status: false,
-                message: error.message || "Error creating user",
+                message: error.message || "Error create user profile",
             };
         }
     }
-
+    async updateProfileService(updateData: UpdateProfileBody, userId: string): Promise<Profile | any> {
+        try {
+            return this.authRepository.updateProfile(updateData, userId);
+        } catch (err: any) {
+            return {
+                status: false,
+                message: err.message || "Error update user profile",
+            };
+        }
+    }
     async logout(userId: string) {
         return await (this.authRepository as any).logoutSession(userId);
     }

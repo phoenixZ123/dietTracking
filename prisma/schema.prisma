@@ -27,7 +27,7 @@ model User {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
-    profiles    Profile?
+    profile     Profile?
     dailyLogs   DailyLog[]
     workoutLogs WorkoutLog[]
     waterLogs   WaterLog[]
@@ -57,7 +57,7 @@ model Profile {
     gender      Gender?
     birthDate   DateTime?
     heightCm    Float?
-    weightKg    Float?
+    weightLb    Float?
     goalWeight  Float?
     activityLvl ActivityLevel @default(MEDIUM)
 

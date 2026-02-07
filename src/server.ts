@@ -23,6 +23,13 @@ const server: FastifyInstance = Fastify({
     logger: true,
     connectionTimeout: 0,
 });
+// CORS
+server.register(cors, {
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+});
 
 // --- Register plugins --- //
 
@@ -31,14 +38,7 @@ server.register(fastifyJwt, {
     secret: process.env.JWT_SECRET || "supersecret", // your JWT secret
     sign: { expiresIn: "1h" },
 });
-await server.register(authPlugin); 
-// CORS
-server.register(cors, {
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-});
+await server.register(authPlugin);
 
 // Custom middleware / plugin
 server.register(roleCheck);

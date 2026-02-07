@@ -1,10 +1,19 @@
-import { CreateUser, ProfileResponse, UserLogin } from "./types/user";
+import { ActivityLevel, CreateUser, ProfileResponse, UserLogin } from "./types/user";
 import { IAuthRepository } from "./user.interface";
 import { changePhoneNo } from "../../Features/utils/phone.util";
 import bcrypt from "bcrypt";
 import { prisma } from "config/db.config";
-import { User } from "@prisma/client";
+import { Gender, Prisma, User } from "@prisma/client";
+import { checkPassword, parseGender } from "Features/utils/userProfile.util";
 
+export interface UpdateProfileBody {
+    gender?: string;
+    birthDate?: string;
+    heightCm?: number;
+    weightLb?: number;
+    goalWeight?: number;
+    activityLvl?: ActivityLevel;
+}
 export class AuthRepository implements IAuthRepository {
 
     async findByEmailOrPhone(emailOrPhone: string): Promise<UserLogin | any> {
@@ -61,7 +70,7 @@ export class AuthRepository implements IAuthRepository {
             return tx.user.findUnique({
                 where: { id: user.id },
                 include: {
-                    profiles: true,
+                    profile: true,
                 },
             });
         });
@@ -104,9 +113,9 @@ export class AuthRepository implements IAuthRepository {
                 email: true,
                 phone_no: true,
                 name: true,
-                created_at:true,
-                updated_at:true,
-                profiles: true,
+                created_at: true,
+                updated_at: true,
+                profile: true,
             },
         });
         return result;
@@ -134,6 +143,51 @@ export class AuthRepository implements IAuthRepository {
 
         return newSession;
     }
+
+    async updateProfile(
+        updateDataInput: UpdateProfileBody,
+        userId: string
+    ): Promise<any> {
+        const profile = await prisma.profile.findUnique({
+            where: { userId },
+        });
+
+        if (!profile) {
+            return {
+                success: false,
+                message: "Profile not found",
+            };
+        }
+        let gender: Gender | undefined;
+
+        try {
+            gender = parseGender(updateDataInput.gender);
+        } catch {
+            return {
+                success: false,
+                message: "Invalid gender value",
+            };
+        }
+        const updateData: Prisma.ProfileUpdateInput = {
+            gender,
+            heightCm: updateDataInput.heightCm,
+            weightLb: updateDataInput.weightLb,
+            goalWeight: updateDataInput.goalWeight,
+            activityLvl: updateDataInput.activityLvl,
+            birthDate: updateDataInput.birthDate
+                ? new Date(updateDataInput.birthDate)
+                : undefined,
+        };
+
+        const updatedProfile = await prisma.profile.update({
+            where: { userId: userId },
+            data: updateData,
+        });
+
+        return
+        updatedProfile;
+    }
+
 
     async getSession(userId: string): Promise<any | null> {
         const userSession = await prisma.userSession.findFirst({
@@ -215,6 +269,4 @@ export class AuthRepository implements IAuthRepository {
     }
 
 }
-export async function checkPassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
-    return await bcrypt.compare(plainPassword, hashedPassword);
-}
+
