@@ -1,10 +1,13 @@
 generator client {
     provider = "prisma-client-js"
+    output= "../../generated/main"
 }
 
 datasource db {
     provider = "postgresql"
     url      = env("DATABASE_URL")
+    relationMode = "prisma"
+    
 }
 
 // model Role {
@@ -59,7 +62,6 @@ model Profile {
     gender      Gender?
     birthDate   DateTime?
     heightCm    Float?
-    weightLb    Float?
     weightLb    Float?
     goalWeight  Float?
     activityLvl ActivityLevel @default(MEDIUM)
