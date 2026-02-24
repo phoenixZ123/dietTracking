@@ -1,6 +1,6 @@
 generator client {
     provider = "prisma-client-js"
-    output= "../../generated/main"
+    output= "../generated/main"
 }
 
 datasource db {
@@ -24,7 +24,7 @@ model User {
     phone_no String? @unique
     password String
     name     String
-    // roleId   String
+    //roleId   String
     // role     Role    @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
     created_at DateTime @default(now())
