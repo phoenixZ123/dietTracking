@@ -6,6 +6,17 @@ import { createDailyLog, CreateMealInput, DailyLogResponse } from "./type/dailyl
 export class dailyLogRepository implements IDailyLogRepository {
 
     async createDailyLog(data: createDailyLog, userId: string): Promise<any> {
+        // 1️⃣ Get the user's current weight from their profile
+        const profile = await prisma.profile.findUnique({
+            where: { userId },
+            select: { weightLb: true },
+        });
+
+        if (!profile) {
+            throw new Error("Profile not found for user");
+        }
+
+        // 2️⃣ Create the DailyLog with default meals
         const dailyLog = await prisma.dailyLog.create({
             data: {
                 date: new Date(data.date),
@@ -23,37 +34,79 @@ export class dailyLogRepository implements IDailyLogRepository {
             },
         });
 
-        return dailyLog;
-    }
-
-    async getDailyLog(date: string, userId: string) {
-        // create day range
-        const start = new Date(date);
-        start.setHours(0, 0, 0, 0);
-
-        const end = new Date(date);
-        end.setHours(23, 59, 59, 999);
-
-        const log = await prisma.dailyLog.findFirst({
-            where: {
-                userId,               // ✅ simple & correct
-                date: {
-                    gte: start,
-                    lte: end,
-                },
-            },
-            include: {
-                meals: true,          // ✅ no second query needed
+        // 3️⃣ Create a WeightLog for the same date using profile.weightLb
+        const weightLog = await prisma.weightLog.create({
+            data: {
+                userId,
+                date: dailyLog.date,
+                weightLb: profile?.weightLb || 0,
             },
         });
 
-        if (!log) return null;
-
         return {
-            id: log.id,
-            date: log.date.toISOString(),
-            userId: log.userId,
-            meals: log.meals,
+            dailyLog,
+            weightLog,
+        };
+    }
+
+    async getDailyLog(date: string, userId: string): Promise<any> {
+        const startOfDay = new Date(date);
+        startOfDay.setHours(0, 0, 0, 0);
+
+        const endOfDay = new Date(date);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        // get all meals with items for the day
+        const meals = await prisma.meal.findMany({
+            where: {
+                dailyLog: {
+                    userId: userId,
+                    date: {
+                        gte: startOfDay,
+                        lte: endOfDay,
+                    },
+                },
+            },
+
+            include: {
+                items: {
+                    include: {
+                        food: true,
+                    },
+                },
+                dailyLog: {
+                    select: {
+                        user: true
+                    }
+                }
+            },
+        });
+
+        // calculate total calories
+        let totalCalories = 0;
+        const mealsDetail = meals.map(meal => {
+            const mealCalories = meal.items.reduce((sum, item) => {
+                const itemCalories = item.food.calories * item.quantity / item.food.servingSize;
+                totalCalories += itemCalories;
+                return sum + itemCalories;
+            }, 0);
+
+            return {
+                mealName: meal.name,
+                calories: mealCalories,
+                items: meal.items.map(item => ({
+                    foodName: item.food.name,
+                    quantity: item.quantity,
+                    calories: item.food.calories * item.quantity / item.food.servingSize,
+                })),
+            };
+        });
+
+        // Return a structured object
+        return {
+            date,
+            totalCalories,
+            meals: mealsDetail,
         };
     }
 

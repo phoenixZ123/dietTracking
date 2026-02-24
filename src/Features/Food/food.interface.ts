@@ -9,5 +9,6 @@ export interface IFoodRepository {
     ): Promise<ResponseFood | any>;
     getSuggestionFood(name: string): Promise<Food[]>;
     getFood(page:number,limit:number): Promise<any>;
+    getFoodById(foodId:string):Promise<any>;
 
 }

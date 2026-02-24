@@ -3,7 +3,7 @@ import { IAuthRepository } from "./user.interface";
 import { changePhoneNo } from "../../Features/utils/phone.util";
 import bcrypt from "bcrypt";
 import { prisma } from "config/db.config";
-import { Gender, Prisma, User } from "@prisma/client";
+import { Gender, Prisma, User } from "../../../generated/main";
 import { checkPassword, parseGender } from "Features/utils/userProfile.util";
 
 export interface UpdateProfileBody {
@@ -158,6 +158,7 @@ export class AuthRepository implements IAuthRepository {
                 message: "Profile not found",
             };
         }
+
         let gender: Gender | undefined;
 
         try {
@@ -168,10 +169,11 @@ export class AuthRepository implements IAuthRepository {
                 message: "Invalid gender value",
             };
         }
+
         const updateData: Prisma.ProfileUpdateInput = {
             gender,
             heightCm: updateDataInput.heightCm,
-            weightLb: updateDataInput.weightLb,
+            weightLb: updateDataInput.weightLb, // ensure no null
             goalWeight: updateDataInput.goalWeight,
             activityLvl: updateDataInput.activityLvl,
             birthDate: updateDataInput.birthDate
@@ -179,13 +181,28 @@ export class AuthRepository implements IAuthRepository {
                 : undefined,
         };
 
+        // Update the profile
         const updatedProfile = await prisma.profile.update({
-            where: { userId: userId },
+            where: { userId },
             data: updateData,
         });
 
-        return
-        updatedProfile;
+        // Update the latest WeightLog only if weightLb exists
+        if (updateData.weightLb !== undefined) {
+            const latestLog = await prisma.weightLog.findFirst({
+                where: { userId },
+                orderBy: { date: 'desc' },
+            });
+
+            if (latestLog) {
+                await prisma.weightLog.update({
+                    where: { id: latestLog.id },
+                    data: { weightLb: updateData.weightLb! },
+                });
+            }
+        }
+
+        return updatedProfile;
     }
 
 

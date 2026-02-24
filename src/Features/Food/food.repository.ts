@@ -71,4 +71,11 @@ export class foodRepository implements IFoodRepository {
         };
 
     }
+    async getFoodById(foodId: string): Promise<any> {
+        return await prisma.food.findFirst({
+            where: {
+                id: foodId
+            }
+        });
+    }
 }

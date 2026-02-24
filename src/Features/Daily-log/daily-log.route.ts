@@ -8,6 +8,6 @@ export default async function dailyLogRoute(fastify: FastifyInstance) {
         "/create-daily-log",
         dailyLogHandler.create.bind(dailyLogHandler) // FIX: ensure "this" binding
     );
-    fastify.get("/get-daily-log", dailyLogHandler.getDailyLog.bind(dailyLogHandler));
-    fastify.get("/get-user-date", dailyLogHandler.getDateUserId.bind(dailyLogHandler));
+    fastify.get("/get-daily-log/:date", dailyLogHandler.getDailyLog.bind(dailyLogHandler));
+    fastify.get("/get-user-log", dailyLogHandler.getDateUserId.bind(dailyLogHandler));
 }

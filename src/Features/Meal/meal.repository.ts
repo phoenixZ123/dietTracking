@@ -11,24 +11,22 @@ export class mealRepository implements IMealRepository {
 
         const { mealId, foodId, quantity } = data;
 
-        // 1️⃣ Fetch the food
+        // 1️⃣ Fetch food
         const food = await prisma.food.findUnique({
             where: { id: foodId }
         });
         if (!food) throw new Error("Food not found");
 
-        // 2️⃣ Fetch the Meal with its DailyLog to get the date
+        // 2️⃣ Fetch meal + daily log
         const meal = await prisma.meal.findUnique({
             where: { id: mealId },
-            include: {
-                dailyLog: true
-            }
+            include: { dailyLog: true }
         });
         if (!meal) throw new Error("Meal not found");
 
-        const logDate = meal.dailyLog.date; // Use the DailyLog's date
+        const logDate = meal.dailyLog.date;
 
-        // 3️⃣ Calculate nutrition based on quantity
+        // 3️⃣ Calculate nutrition
         const factor = quantity / food.servingSize;
         const totalCalories = food.calories * factor;
         const totalProtein = food.protein * factor;
@@ -41,33 +39,132 @@ export class mealRepository implements IMealRepository {
                 mealId,
                 foodId,
                 quantity,
-                userId,
-            },
-            include: {
-                meal: true,
-                food: true,
-                user: true,
-
-            },
+                userId
+            }
         });
 
-        // 5️⃣ Insert into CaloriesLog using DailyLog's date
-        const caloriesLog = await prisma.caloriesLog.create({
+        // 5️⃣ Create CaloriesLog
+        await prisma.caloriesLog.create({
             data: {
                 userId,
                 mealId,
-                date: logDate,           // <-- important change
+                date: logDate,
                 meal: meal.name,
                 foodName: food.name,
                 quantity,
                 totalCalories,
                 totalProtein,
                 totalCarbs,
-                totalFat,
-            },
+                totalFat
+            }
         });
 
-        return { mealItem, caloriesLog };
+        // ===============================
+        // 🔥 WEIGHT CALCULATION SECTION
+        // ===============================
+
+        // 6️⃣ Get user profile
+        const profile = await prisma.profile.findUnique({
+            where: { userId }
+        });
+
+        if (!profile || !profile.weightLb || !profile.heightCm || !profile.birthDate) {
+            return { mealItem }; // not enough data to calculate weight
+        }
+
+        // 7️⃣ Calculate age
+        const today = new Date();
+        const age = today.getFullYear() - profile.birthDate.getFullYear();
+
+        // 8️⃣ Convert lb → kg
+        const weightKg = profile.weightLb / 2.20462;
+
+        // 9️⃣ Calculate BMR (Mifflin-St Jeor)
+        let BMR = 0;
+
+        if (profile.gender === "MALE") {
+            BMR = (10 * weightKg) + (6.25 * profile.heightCm) - (5 * age) + 5;
+        } else {
+            BMR = (10 * weightKg) + (6.25 * profile.heightCm) - (5 * age) - 161;
+        }
+
+        // 🔟 Apply activity multiplier
+        let activityMultiplier = 1.2;
+
+        switch (profile.activityLvl) {
+            case "LOW":
+                activityMultiplier = 1.2;
+                break;
+            case "MEDIUM":
+                activityMultiplier = 1.55;
+                break;
+            case "HIGH":
+                activityMultiplier = 1.725;
+                break;
+        }
+
+        const TDEE = BMR * activityMultiplier;
+
+        // 🎯 If goal is weight loss → subtract 500 calories
+        const targetCaloriesPerDay =
+            profile.goalWeight && profile.goalWeight < profile.weightLb
+                ? TDEE - 500
+                : TDEE;
+
+        // ===============================
+        // 📊 Calculate total eaten today
+        // ===============================
+
+        const dayStart = new Date(logDate);
+        dayStart.setHours(0, 0, 0, 0);
+
+        const dayEnd = new Date(logDate);
+        dayEnd.setHours(23, 59, 59, 999);
+
+        const totalCaloriesToday = await prisma.caloriesLog.aggregate({
+            _sum: { totalCalories: true },
+            where: {
+                userId,
+                date: { gte: dayStart, lte: dayEnd }
+            }
+        });
+
+        const eatenCalories = totalCaloriesToday._sum.totalCalories ?? 0;
+
+        // ===============================
+        // ⚖ Update existing WeightLog
+        // ===============================
+
+        const weightLog: any = await prisma.weightLog.findFirst({
+            where: {
+                userId,
+                date: { gte: dayStart, lte: dayEnd }
+            }
+        });
+
+        if (weightLog) {
+            const calorieDifference = eatenCalories - targetCaloriesPerDay;
+
+            // 3500 calories ≈ 1 lb
+            const weightChange = calorieDifference / 3500;
+
+            const newWeight = weightLog?.weightLb + weightChange;
+
+            await prisma.weightLog.update({
+                where: { id: weightLog.id },
+                data: { weightLb: newWeight }
+            });
+            await prisma.profile.update({
+                where: { userId },
+                data: { weightLb: newWeight }
+            });
+        }
+
+        return {
+            mealItem,
+            eatenCalories: eatenCalories * (food.servingSize / 100),
+            targetCaloriesPerDay
+        };
     }
 
 

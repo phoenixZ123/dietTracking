@@ -25,22 +25,22 @@ export class DailyLogHandler {
             }
         }
 
-        const dailylog = await this.dailyLogService.dailyLogCreateService(dailyLog, userId);
+        const logDetail = await this.dailyLogService.dailyLogCreateService(dailyLog, userId);
         return {
             success: true,
             message: "Daily Log created successfully.",
-            dailylog
+            logDetail
         }
     }
     async getDailyLog(
         req: FastifyRequest<{
-            Querystring: {
+            Params: {
                 date: string;
             };
         }>,
         res: FastifyReply
     ) {
-        const { date } = req.query;
+        const { date } = req.params;
 
         if (!date) {
             return res.code(http_status.BadRequest).send({
@@ -62,7 +62,7 @@ export class DailyLogHandler {
         return {
             success: true,
             message: "Get DailyLog successfully.",
-            dailylog,
+            data:dailylog,
         };
     }
     async getDateUserId(req: FastifyRequest, res: FastifyReply) {

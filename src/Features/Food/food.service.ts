@@ -17,7 +17,11 @@ export class FoodService {
   async getSuggestFoodService(name: string): Promise<Food[] | any> {
     return this.foodRepository.getSuggestionFood(name);
   }
-  async getFoodService(page:number,limit:number) {
-    return this.foodRepository.getFood(page,limit);
+  async getFoodService(page: number, limit: number) {
+    return this.foodRepository.getFood(page, limit);
+  }
+  async getFoodByIdService(foodId: string) {
+    return this.foodRepository.getFoodById(foodId);
+
   }
 }

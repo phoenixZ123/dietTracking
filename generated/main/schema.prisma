@@ -139,7 +139,7 @@ model WeightLog {
   id       String   @id @default(uuid())
   date     DateTime
   userId   String
-  weightKg Float
+  weightLb Float?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

@@ -208,7 +208,7 @@ exports.Prisma.WeightLogScalarFieldEnum = {
   id: 'id',
   date: 'date',
   userId: 'userId',
-  weightKg: 'weightKg'
+  weightLb: 'weightLb'
 };
 
 exports.Prisma.FoodScalarFieldEnum = {

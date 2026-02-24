@@ -93,4 +93,19 @@ export class FoodHandler {
             foods
         })
     }
+    foodById = async (req: FastifyRequest<{ Params: { foodId: string } }>, res: FastifyReply) => {
+        const foodId = req.params.foodId;
+        const food = await this.foodService.getFoodByIdService(foodId);
+        if (!food) {
+            return res.status(http_status.NotFound).send({
+                success: false,
+                message: "Food Not Found",
+            })
+        }
+        return res.status(http_status.Success).send({
+            success: true,
+            message: "Food Found Successfully",
+            data: food
+        })
+    }
 }

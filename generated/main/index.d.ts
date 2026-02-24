@@ -11063,63 +11063,63 @@ export namespace Prisma {
   }
 
   export type WeightLogAvgAggregateOutputType = {
-    weightKg: number | null
+    weightLb: number | null
   }
 
   export type WeightLogSumAggregateOutputType = {
-    weightKg: number | null
+    weightLb: number | null
   }
 
   export type WeightLogMinAggregateOutputType = {
     id: string | null
     date: Date | null
     userId: string | null
-    weightKg: number | null
+    weightLb: number | null
   }
 
   export type WeightLogMaxAggregateOutputType = {
     id: string | null
     date: Date | null
     userId: string | null
-    weightKg: number | null
+    weightLb: number | null
   }
 
   export type WeightLogCountAggregateOutputType = {
     id: number
     date: number
     userId: number
-    weightKg: number
+    weightLb: number
     _all: number
   }
 
 
   export type WeightLogAvgAggregateInputType = {
-    weightKg?: true
+    weightLb?: true
   }
 
   export type WeightLogSumAggregateInputType = {
-    weightKg?: true
+    weightLb?: true
   }
 
   export type WeightLogMinAggregateInputType = {
     id?: true
     date?: true
     userId?: true
-    weightKg?: true
+    weightLb?: true
   }
 
   export type WeightLogMaxAggregateInputType = {
     id?: true
     date?: true
     userId?: true
-    weightKg?: true
+    weightLb?: true
   }
 
   export type WeightLogCountAggregateInputType = {
     id?: true
     date?: true
     userId?: true
-    weightKg?: true
+    weightLb?: true
     _all?: true
   }
 
@@ -11213,7 +11213,7 @@ export namespace Prisma {
     id: string
     date: Date
     userId: string
-    weightKg: number
+    weightLb: number | null
     _count: WeightLogCountAggregateOutputType | null
     _avg: WeightLogAvgAggregateOutputType | null
     _sum: WeightLogSumAggregateOutputType | null
@@ -11239,7 +11239,7 @@ export namespace Prisma {
     id?: boolean
     date?: boolean
     userId?: boolean
-    weightKg?: boolean
+    weightLb?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["weightLog"]>
 
@@ -11247,7 +11247,7 @@ export namespace Prisma {
     id?: boolean
     date?: boolean
     userId?: boolean
-    weightKg?: boolean
+    weightLb?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["weightLog"]>
 
@@ -11255,7 +11255,7 @@ export namespace Prisma {
     id?: boolean
     date?: boolean
     userId?: boolean
-    weightKg?: boolean
+    weightLb?: boolean
   }
 
   export type WeightLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11274,7 +11274,7 @@ export namespace Prisma {
       id: string
       date: Date
       userId: string
-      weightKg: number
+      weightLb: number | null
     }, ExtArgs["result"]["weightLog"]>
     composites: {}
   }
@@ -11672,7 +11672,7 @@ export namespace Prisma {
     readonly id: FieldRef<"WeightLog", 'String'>
     readonly date: FieldRef<"WeightLog", 'DateTime'>
     readonly userId: FieldRef<"WeightLog", 'String'>
-    readonly weightKg: FieldRef<"WeightLog", 'Float'>
+    readonly weightLb: FieldRef<"WeightLog", 'Float'>
   }
     
 
@@ -14325,7 +14325,7 @@ export namespace Prisma {
     id: 'id',
     date: 'date',
     userId: 'userId',
-    weightKg: 'weightKg'
+    weightLb: 'weightLb'
   };
 
   export type WeightLogScalarFieldEnum = (typeof WeightLogScalarFieldEnum)[keyof typeof WeightLogScalarFieldEnum]
@@ -15109,7 +15109,7 @@ export namespace Prisma {
     id?: StringFilter<"WeightLog"> | string
     date?: DateTimeFilter<"WeightLog"> | Date | string
     userId?: StringFilter<"WeightLog"> | string
-    weightKg?: FloatFilter<"WeightLog"> | number
+    weightLb?: FloatNullableFilter<"WeightLog"> | number | null
     user?: XOR<UserRelationFilter, UserWhereInput>
   }
 
@@ -15117,7 +15117,7 @@ export namespace Prisma {
     id?: SortOrder
     date?: SortOrder
     userId?: SortOrder
-    weightKg?: SortOrder
+    weightLb?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
   }
 
@@ -15128,7 +15128,7 @@ export namespace Prisma {
     NOT?: WeightLogWhereInput | WeightLogWhereInput[]
     date?: DateTimeFilter<"WeightLog"> | Date | string
     userId?: StringFilter<"WeightLog"> | string
-    weightKg?: FloatFilter<"WeightLog"> | number
+    weightLb?: FloatNullableFilter<"WeightLog"> | number | null
     user?: XOR<UserRelationFilter, UserWhereInput>
   }, "id">
 
@@ -15136,7 +15136,7 @@ export namespace Prisma {
     id?: SortOrder
     date?: SortOrder
     userId?: SortOrder
-    weightKg?: SortOrder
+    weightLb?: SortOrderInput | SortOrder
     _count?: WeightLogCountOrderByAggregateInput
     _avg?: WeightLogAvgOrderByAggregateInput
     _max?: WeightLogMaxOrderByAggregateInput
@@ -15151,7 +15151,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"WeightLog"> | string
     date?: DateTimeWithAggregatesFilter<"WeightLog"> | Date | string
     userId?: StringWithAggregatesFilter<"WeightLog"> | string
-    weightKg?: FloatWithAggregatesFilter<"WeightLog"> | number
+    weightLb?: FloatNullableWithAggregatesFilter<"WeightLog"> | number | null
   }
 
   export type FoodWhereInput = {
@@ -15968,7 +15968,7 @@ export namespace Prisma {
   export type WeightLogCreateInput = {
     id?: string
     date: Date | string
-    weightKg: number
+    weightLb?: number | null
     user: UserCreateNestedOneWithoutWeightLogsInput
   }
 
@@ -15976,13 +15976,13 @@ export namespace Prisma {
     id?: string
     date: Date | string
     userId: string
-    weightKg: number
+    weightLb?: number | null
   }
 
   export type WeightLogUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    weightKg?: FloatFieldUpdateOperationsInput | number
+    weightLb?: NullableFloatFieldUpdateOperationsInput | number | null
     user?: UserUpdateOneRequiredWithoutWeightLogsNestedInput
   }
 
@@ -15990,27 +15990,27 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
-    weightKg?: FloatFieldUpdateOperationsInput | number
+    weightLb?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type WeightLogCreateManyInput = {
     id?: string
     date: Date | string
     userId: string
-    weightKg: number
+    weightLb?: number | null
   }
 
   export type WeightLogUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    weightKg?: FloatFieldUpdateOperationsInput | number
+    weightLb?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type WeightLogUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
-    weightKg?: FloatFieldUpdateOperationsInput | number
+    weightLb?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type FoodCreateInput = {
@@ -16862,29 +16862,29 @@ export namespace Prisma {
     id?: SortOrder
     date?: SortOrder
     userId?: SortOrder
-    weightKg?: SortOrder
+    weightLb?: SortOrder
   }
 
   export type WeightLogAvgOrderByAggregateInput = {
-    weightKg?: SortOrder
+    weightLb?: SortOrder
   }
 
   export type WeightLogMaxOrderByAggregateInput = {
     id?: SortOrder
     date?: SortOrder
     userId?: SortOrder
-    weightKg?: SortOrder
+    weightLb?: SortOrder
   }
 
   export type WeightLogMinOrderByAggregateInput = {
     id?: SortOrder
     date?: SortOrder
     userId?: SortOrder
-    weightKg?: SortOrder
+    weightLb?: SortOrder
   }
 
   export type WeightLogSumOrderByAggregateInput = {
-    weightKg?: SortOrder
+    weightLb?: SortOrder
   }
 
   export type EnumUnitFilter<$PrismaModel = never> = {
@@ -18200,13 +18200,13 @@ export namespace Prisma {
   export type WeightLogCreateWithoutUserInput = {
     id?: string
     date: Date | string
-    weightKg: number
+    weightLb?: number | null
   }
 
   export type WeightLogUncheckedCreateWithoutUserInput = {
     id?: string
     date: Date | string
-    weightKg: number
+    weightLb?: number | null
   }
 
   export type WeightLogCreateOrConnectWithoutUserInput = {
@@ -18492,7 +18492,7 @@ export namespace Prisma {
     id?: StringFilter<"WeightLog"> | string
     date?: DateTimeFilter<"WeightLog"> | Date | string
     userId?: StringFilter<"WeightLog"> | string
-    weightKg?: FloatFilter<"WeightLog"> | number
+    weightLb?: FloatNullableFilter<"WeightLog"> | number | null
   }
 
   export type UserSessionUpsertWithoutUserInput = {
@@ -19934,7 +19934,7 @@ export namespace Prisma {
   export type WeightLogCreateManyUserInput = {
     id?: string
     date: Date | string
-    weightKg: number
+    weightLb?: number | null
   }
 
   export type FoodCreateManyUserInput = {
@@ -20040,19 +20040,19 @@ export namespace Prisma {
   export type WeightLogUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    weightKg?: FloatFieldUpdateOperationsInput | number
+    weightLb?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type WeightLogUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    weightKg?: FloatFieldUpdateOperationsInput | number
+    weightLb?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type WeightLogUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
-    weightKg?: FloatFieldUpdateOperationsInput | number
+    weightLb?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type FoodUpdateWithoutUserInput = {
