@@ -1,12 +1,12 @@
 import { DailyLog, Meal } from "@prisma/client";
 import { IDailyLogRepository } from "./interface/daily-log.interface";
-import { prisma } from "config/db.config";
 import { createDailyLog, CreateMealInput, DailyLogResponse } from "./type/dailylog";
+import { mainDb } from "config/db.config";
 
 export class dailyLogRepository implements IDailyLogRepository {
 
     async createDailyLog(data: createDailyLog, userId: string): Promise<any> {
-        const dailyLog = await prisma.dailyLog.create({
+        const dailyLog = await mainDb.dailyLog.create({
             data: {
                 date: new Date(data.date),
                 userId,
@@ -34,7 +34,7 @@ export class dailyLogRepository implements IDailyLogRepository {
         const end = new Date(date);
         end.setHours(23, 59, 59, 999);
 
-        const log = await prisma.dailyLog.findFirst({
+        const log = await mainDb.dailyLog.findFirst({
             where: {
                 userId,               // ✅ simple & correct
                 date: {
@@ -58,7 +58,7 @@ export class dailyLogRepository implements IDailyLogRepository {
     }
 
     async getDateByUserId(userId: string): Promise<DailyLog[]> {
-        return prisma.dailyLog.findMany({ where: { user: { id: userId } }, include: { user: true, meals: true } })
+        return mainDb.dailyLog.findMany({ where: { user: { id: userId } }, include: { user: true, meals: true } })
     }
 }
 

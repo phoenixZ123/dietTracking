@@ -1,4 +1,4 @@
-import { prisma } from "config/db.config";
+import { mainDb } from "config/db.config";
 import { IExerciseRepository } from "./interface/exercise.interface";
 import { createExercise, UserWorkOutLog } from "./types/exercise";
 import { Exercise, WorkoutLog } from "@prisma/client";
@@ -11,7 +11,7 @@ interface caloriesResponse{
 }
 export class ExerciseRepository implements IExerciseRepository {
     async createExercise(exerciseData: createExercise): Promise<Exercise> {
-        const exercise = prisma.exercise.create({
+        const exercise = mainDb.exercise.create({
             data: {
                 name: exerciseData.name,
                 caloriesBurnedPerMin: exerciseData.caloriesBurnedPerMin
@@ -21,7 +21,7 @@ export class ExerciseRepository implements IExerciseRepository {
     }
     async UserExercise(ucdata: UserWorkOutLog, userId: string): Promise<WorkoutLog> {
         const workoutDate: any = ucdata.date;
-        const workoutLog = await prisma.workoutLog.create({
+        const workoutLog = await mainDb.workoutLog.create({
             data: {
                 date: new Date(workoutDate),
                 exerciseId: ucdata.exerciseId,
@@ -37,7 +37,7 @@ export class ExerciseRepository implements IExerciseRepository {
     }
     async getDailyBurnedCalories(userId: string): Promise<caloriesResponse[]> {
         // Fetch all workout logs for the user
-        const logs = await prisma.workoutLog.findMany({
+        const logs = await mainDb.workoutLog.findMany({
             where: { userId },
             orderBy: { date: "desc" },
             include: { exercise: true, user: true }
@@ -53,7 +53,7 @@ export class ExerciseRepository implements IExerciseRepository {
         return result;
     }
     async getDailyExercisesScopeMultiDay(userId: string): Promise<any> {
-        const logs = await prisma.workoutLog.findMany({
+        const logs = await mainDb.workoutLog.findMany({
             where: {
                 userId,
             },

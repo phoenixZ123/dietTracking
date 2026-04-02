@@ -40,7 +40,9 @@
     "start:dev": "tsx watch src/server.ts",
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "prisma:generate": "npx prisma generate --schema=prisma/main/schema.prisma && npx prisma generate --schema=prisma/active/schema.prisma",
+    "prisma:dbpush": "npx prisma db push --schema=prisma/main/schema.prisma && npx prisma db push --schema=prisma/active/schema.prisma"
   },
   "keywords": [],
   "author": "",

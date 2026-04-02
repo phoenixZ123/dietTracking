@@ -1,3 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+// main DB
+import { PrismaClient as MainClient } from '../../generated/main'
 
-export const prisma = new PrismaClient();
+// active DB
+import { PrismaClient as ActiveClient } from '../../generated/active'
+
+export const mainDb = new MainClient()
+export const activeDb = new ActiveClient()

@@ -1,5 +1,6 @@
 generator client {
     provider = "prisma-client-js"
+    output   = "../../generated/main"
 }
 
 datasource db {
@@ -7,13 +8,13 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-// model Role {
-//     id         String   @id @default(uuid())
-//     name       String   @unique
-//     users      User[] // relation, no onDelete here
-//     created_at DateTime @default(now())
-//     isActive   Boolean  @default(true)
-// }
+model Role {
+    id         Int      @id
+    name       String   @unique
+    users      User[] // relation, no onDelete here
+    created_at DateTime @default(now())
+    isActive   Boolean  @default(true)
+}
 
 model User {
     id       String  @id @default(uuid())
@@ -21,8 +22,8 @@ model User {
     phone_no String? @unique
     password String
     name     String
-    // roleId   String
-    // role     Role    @relation(fields: [roleId], references: [id], onDelete: Cascade)
+    roleId   Int     @default(2)
+    role     Role    @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
@@ -59,7 +60,6 @@ model Profile {
     gender      Gender?
     birthDate   DateTime?
     heightCm    Float?
-    weightLb    Float?
     weightLb    Float?
     goalWeight  Float?
     activityLvl ActivityLevel @default(MEDIUM)
@@ -118,7 +118,7 @@ model WorkoutLog {
     exerciseId  String
     durationMin Float
 
-    user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user     User     @relation(fields: [userId], references: [id])
     exercise Exercise @relation(fields: [exerciseId], references: [id])
 
     created_at DateTime @default(now())

@@ -1,4 +1,4 @@
-import { prisma } from "../../config/db.config";
+import { mainDb } from "config/db.config";
 import { IMealRepository } from "./interface/meal.interface";
 import { Meal, MealItem } from "@prisma/client";
 
@@ -12,13 +12,13 @@ export class mealRepository implements IMealRepository {
         const { mealId, foodId, quantity } = data;
 
         // 1️⃣ Fetch the food
-        const food = await prisma.food.findUnique({
+        const food = await mainDb.food.findUnique({
             where: { id: foodId }
         });
         if (!food) throw new Error("Food not found");
 
         // 2️⃣ Fetch the Meal with its DailyLog to get the date
-        const meal = await prisma.meal.findUnique({
+        const meal = await mainDb.meal.findUnique({
             where: { id: mealId },
             include: {
                 dailyLog: true
@@ -36,7 +36,7 @@ export class mealRepository implements IMealRepository {
         const totalFat = food.fat * factor;
 
         // 4️⃣ Create MealItem
-        const mealItem = await prisma.mealItem.create({
+        const mealItem = await mainDb.mealItem.create({
             data: {
                 mealId,
                 foodId,
@@ -52,7 +52,7 @@ export class mealRepository implements IMealRepository {
         });
 
         // 5️⃣ Insert into CaloriesLog using DailyLog's date
-        const caloriesLog = await prisma.caloriesLog.create({
+        const caloriesLog = await mainDb.caloriesLog.create({
             data: {
                 userId,
                 mealId,
@@ -72,12 +72,12 @@ export class mealRepository implements IMealRepository {
 
 
     async getMeal(logId: string): Promise<any> {
-        const meal = await prisma.meal.findMany({ where: { logId } })
+        const meal = await mainDb.meal.findMany({ where: { logId } })
         if (meal.length == 0) return null;
         return meal;
     }
     async getUserDailyMeal(mealId: string, userId: string) {
-        const mealItems = await prisma.mealItem.findMany({
+        const mealItems = await mainDb.mealItem.findMany({
             where: {
                 userId,
                 mealId

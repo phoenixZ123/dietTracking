@@ -1,10 +1,9 @@
 import { ActivityLevel, CreateUser, ProfileResponse, UserLogin } from "./types/user";
-import { IAuthRepository } from "./user.interface";
 import { changePhoneNo } from "../../Features/utils/phone.util";
-import bcrypt from "bcrypt";
-import { prisma } from "config/db.config";
-import { Gender, Prisma, User } from "@prisma/client";
-import { checkPassword, parseGender } from "Features/utils/userProfile.util";
+import { mainDb } from "../../config/db.config";
+import { Gender, Prisma } from "@prisma/client";
+import { checkPassword, parseGender } from "../../Features/utils/userProfile.util";
+import { IAuthRepository } from "./interface/user.interface";
 
 export interface UpdateProfileBody {
     gender?: string;
@@ -17,7 +16,7 @@ export interface UpdateProfileBody {
 export class AuthRepository implements IAuthRepository {
 
     async findByEmailOrPhone(emailOrPhone: string): Promise<UserLogin | any> {
-        return prisma.user.findFirst({
+        return mainDb.user.findFirst({
             where: {
                 OR: [{ email: emailOrPhone }, { phone_no: emailOrPhone }],
             },
@@ -51,7 +50,7 @@ export class AuthRepository implements IAuthRepository {
         //         // },
         //     },
         // });
-        const result = await prisma.$transaction(async (tx: any) => {
+        const result = await mainDb.$transaction(async (tx: any) => {
             const user = await tx.user.create({
                 data: {
                     email: userData.email,
@@ -79,7 +78,7 @@ export class AuthRepository implements IAuthRepository {
 
     }
     async loginUser(emailOrPhone: string, password: string): Promise<UserLogin | any> {
-        const user = await prisma.user.findFirst({
+        const user = await mainDb.user.findFirst({
             where: {
                 OR: [{ email: emailOrPhone }, { phone_no: changePhoneNo(emailOrPhone) }]
             },
@@ -106,18 +105,21 @@ export class AuthRepository implements IAuthRepository {
     }
 
     async getProfile(userId: string): Promise<any> {
-        const result = await prisma.user.findUnique({
+        const result = await mainDb.user.findUnique({
             where: { id: userId },
             select: {
                 id: true,
                 email: true,
                 phone_no: true,
                 name: true,
+                role: true,  // scalar field
                 created_at: true,
-                updated_at: true,
-                profile: true,
-            },
+                updated_at: true
+            }
         });
+
+        return result;
+
         return result;
     }
     async createSession(
@@ -129,7 +131,7 @@ export class AuthRepository implements IAuthRepository {
         deviceId?: string // optional
     ): Promise<any> {
 
-        const newSession = await prisma.userSession.create({
+        const newSession = await mainDb.userSession.create({
             data: {
                 userId: String(userId),
                 device_type: deviceType ?? "web",       // camelCase
@@ -148,7 +150,7 @@ export class AuthRepository implements IAuthRepository {
         updateDataInput: UpdateProfileBody,
         userId: string
     ): Promise<any> {
-        const profile = await prisma.profile.findUnique({
+        const profile = await mainDb.profile.findUnique({
             where: { userId },
         });
 
@@ -179,7 +181,7 @@ export class AuthRepository implements IAuthRepository {
                 : undefined,
         };
 
-        const updatedProfile = await prisma.profile.update({
+        const updatedProfile = await mainDb.profile.update({
             where: { userId: userId },
             data: updateData,
         });
@@ -190,7 +192,7 @@ export class AuthRepository implements IAuthRepository {
 
 
     async getSession(userId: string): Promise<any | null> {
-        const userSession = await prisma.userSession.findFirst({
+        const userSession = await mainDb.userSession.findFirst({
             where: { userId },
             orderBy: { createdAt: "desc" },
         });
@@ -207,14 +209,14 @@ export class AuthRepository implements IAuthRepository {
         const finalIp = userIp ?? "unknown";
 
         // Find the latest session for this user
-        const existingSession = await prisma.userSession.findFirst({
+        const existingSession = await mainDb.userSession.findFirst({
             where: { userId },
             orderBy: { createdAt: "desc" },
         });
 
         if (existingSession) {
             // Update the existing session
-            const updated = await prisma.userSession.update({
+            const updated = await mainDb.userSession.update({
                 where: { id: existingSession.id },
                 data: {
                     refreshToken: session,
@@ -234,7 +236,7 @@ export class AuthRepository implements IAuthRepository {
             };
         } else {
             // Create a new session if none exists
-            const newSession = await prisma.userSession.create({
+            const newSession = await mainDb.userSession.create({
                 data: {
                     userId,
                     refreshToken: session,
@@ -258,7 +260,7 @@ export class AuthRepository implements IAuthRepository {
     }
 
     async logoutSession(sessionToken: string) {
-        return await prisma.userSession.updateMany({
+        return await mainDb.userSession.updateMany({
             where: { user: { id: sessionToken } },
             data: {
                 is_online: false,

@@ -2,7 +2,7 @@ import { Meal } from "@prisma/client";
 import { MealService } from "./meal.service";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { http_status } from "Features/shared/constants/http";
-import { prisma } from "config/db.config";
+import { mainDb } from "config/db.config";
 
 const mealService = new MealService();
 
@@ -17,12 +17,12 @@ export class MealHandler {
         const user = req.user as { id: string };
         const body = req.body;
 
-        const mealdata = prisma.meal.findUnique({ where: { id: body.mealId } });
+        const mealdata = mainDb.meal.findUnique({ where: { id: body.mealId } });
 
-        const food = prisma.food.findUnique({ where: { id: body.foodId } });
+        const food = mainDb.food.findUnique({ where: { id: body.foodId } });
 
         // Validate user exists
-        const ui = prisma.user.findUnique({ where: { id: user.id } });
+        const ui = mainDb.user.findUnique({ where: { id: user.id } });
         if (!mealdata || !food || !ui) {
             return res.status(http_status.BadRequest).send({
                 success: false,
