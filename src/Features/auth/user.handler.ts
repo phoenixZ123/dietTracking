@@ -77,14 +77,14 @@ export class AuthHandler {
         });
 
     }
-    async getUser(req: FastifyRequest, rep: FastifyReply) {
-        const users = await authService.getUserService();
-        return rep.status(http_status.Success).send({
-            success: true,
-            message: "Get User Successfully",
-            users
-        })
-    }
+    // async getUser(req: FastifyRequest, rep: FastifyReply) {
+    //     const users = await authService.getUserService();
+    //     return rep.status(http_status.Success).send({
+    //         success: true,
+    //         message: "Get User Successfully",
+    //         users
+    //     })
+    // }
 
     async getProfile(req: FastifyRequest, rep: FastifyReply) {
         const user = req.user as { id: string };

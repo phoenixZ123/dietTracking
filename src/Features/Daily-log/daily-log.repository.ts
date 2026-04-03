@@ -1,23 +1,12 @@
-import { DailyLog, Meal } from "@prisma/client";
+import { DailyLog } from "../../../generated/main";
 import { IDailyLogRepository } from "./interface/daily-log.interface";
-import { prisma } from "config/db.config";
 import { createDailyLog, CreateMealInput, DailyLogResponse } from "./type/dailylog";
+import { mainDb } from "config/db.config";
 
 export class dailyLogRepository implements IDailyLogRepository {
 
     async createDailyLog(data: createDailyLog, userId: string): Promise<any> {
-        // 1️⃣ Get the user's current weight from their profile
-        const profile = await prisma.profile.findUnique({
-            where: { userId },
-            select: { weightLb: true },
-        });
-
-        if (!profile) {
-            throw new Error("Profile not found for user");
-        }
-
-        // 2️⃣ Create the DailyLog with default meals
-        const dailyLog = await prisma.dailyLog.create({
+        const dailyLog = await mainDb.dailyLog.create({
             data: {
                 date: new Date(data.date),
                 userId,
@@ -34,19 +23,7 @@ export class dailyLogRepository implements IDailyLogRepository {
             },
         });
 
-        // 3️⃣ Create a WeightLog for the same date using profile.weightLb
-        const weightLog = await prisma.weightLog.create({
-            data: {
-                userId,
-                date: dailyLog.date,
-                weightLb: profile?.weightLb || 0,
-            },
-        });
-
-        return {
-            dailyLog,
-            weightLog,
-        };
+        return dailyLog;
     }
 
     async getDailyLog(date: string, userId: string): Promise<any> {
@@ -57,7 +34,7 @@ export class dailyLogRepository implements IDailyLogRepository {
         endOfDay.setHours(23, 59, 59, 999);
 
         // get all meals with items for the day
-        const meals = await prisma.meal.findMany({
+        const meals = await mainDb.meal.findMany({
             where: {
                 dailyLog: {
                     userId: userId,
@@ -111,7 +88,7 @@ export class dailyLogRepository implements IDailyLogRepository {
     }
 
     async getDateByUserId(userId: string): Promise<DailyLog[]> {
-        return prisma.dailyLog.findMany({ where: { user: { id: userId } }, include: { user: true, meals: true } })
+        return mainDb.dailyLog.findMany({ where: { user: { id: userId } }, include: { user: true, meals: true } })
     }
 }
 

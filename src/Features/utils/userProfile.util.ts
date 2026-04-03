@@ -1,5 +1,5 @@
-import { Gender } from "@prisma/client";
 import bcrypt from "bcrypt";
+import { Gender } from "../../../generated/main";
 export function parseGender(value?: string): Gender | undefined {
     if (!value) return undefined;
 

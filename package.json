@@ -1,4 +1,16 @@
 {
+  "name": "diet-tracking-app",
+  "version": "1.0.0",
+  "main": "server.ts",
+  "type": "module",
+  "scripts": {
+    "start:dev": "tsx watch src/server.ts",
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "prisma:generate": "npx prisma generate --schema=prisma/main/schema.prisma && npx prisma generate --schema=prisma/active/schema.prisma",
+    "prisma:dbpush": "npx prisma db push --schema=prisma/main/schema.prisma && npx prisma db push --schema=prisma/active/schema.prisma"
+  },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.975.0",
     "@aws-sdk/lib-storage": "^3.975.0",
@@ -33,22 +45,8 @@
     "tsx": "^4.20.5",
     "typescript": "^5.9.2"
   },
-  "name": "diet-tracking-app",
-  "version": "1.0.0",
-  "main": "server.ts",
-  "scripts": {
-    "start:dev": "tsx watch src/server.ts",
-    "dev": "tsx watch src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "prisma:generate": "npx prisma generate --schema=prisma/schema.prisma",
-    "prisma:dbpush": "npx prisma db push --schema=prisma/schema.prisma",
-    "prisma:migrate": "npx prisma migrate dev --schema=prisma/schema.prisma",
-    "prisma:deploy": "npx prisma migrate deploy --schema=prisma/schema.prisma"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "description": ""
 }

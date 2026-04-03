@@ -122,132 +122,15 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.RoleScalarFieldEnum = {
+exports.Prisma.Active_userScalarFieldEnum = {
   id: 'id',
-  name: 'name',
-  created_at: 'created_at',
-  isActive: 'isActive'
-};
-
-exports.Prisma.UserScalarFieldEnum = {
-  id: 'id',
-  email: 'email',
-  phone_no: 'phone_no',
-  password: 'password',
-  name: 'name',
+  userId: 'userId',
   roleId: 'roleId',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-};
-
-exports.Prisma.UserSessionScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  refreshToken: 'refreshToken',
-  device_type: 'device_type',
-  userAgent: 'userAgent',
-  ipAddress: 'ipAddress',
-  is_online: 'is_online',
-  firebase_key: 'firebase_key',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  last_seen: 'last_seen'
-};
-
-exports.Prisma.ProfileScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  gender: 'gender',
-  birthDate: 'birthDate',
-  heightCm: 'heightCm',
-  weightLb: 'weightLb',
-  goalWeight: 'goalWeight',
-  activityLvl: 'activityLvl'
-};
-
-exports.Prisma.DailyLogScalarFieldEnum = {
-  id: 'id',
-  date: 'date',
-  userId: 'userId'
-};
-
-exports.Prisma.MealScalarFieldEnum = {
-  id: 'id',
   name: 'name',
-  logId: 'logId'
-};
-
-exports.Prisma.MealItemScalarFieldEnum = {
-  id: 'id',
-  mealId: 'mealId',
-  foodId: 'foodId',
-  quantity: 'quantity',
-  userId: 'userId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ExerciseScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  caloriesBurnedPerMin: 'caloriesBurnedPerMin',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-};
-
-exports.Prisma.WorkoutLogScalarFieldEnum = {
-  id: 'id',
-  date: 'date',
-  userId: 'userId',
-  exerciseId: 'exerciseId',
-  durationMin: 'durationMin',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-};
-
-exports.Prisma.WaterLogScalarFieldEnum = {
-  id: 'id',
-  date: 'date',
-  userId: 'userId',
-  amount: 'amount'
-};
-
-exports.Prisma.WeightLogScalarFieldEnum = {
-  id: 'id',
-  date: 'date',
-  userId: 'userId',
-  weightLb: 'weightLb'
-};
-
-exports.Prisma.FoodScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  calories: 'calories',
-  protein: 'protein',
-  carbs: 'carbs',
-  fat: 'fat',
-  servingSize: 'servingSize',
-  unit: 'unit',
-  food_image: 'food_image',
-  created_at: 'created_at',
-  updated_at: 'updated_at',
-  userId: 'userId'
-};
-
-exports.Prisma.CaloriesLogScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  mealId: 'mealId',
-  date: 'date',
-  meal: 'meal',
-  foodName: 'foodName',
-  quantity: 'quantity',
-  totalCalories: 'totalCalories',
-  totalProtein: 'totalProtein',
-  totalCarbs: 'totalCarbs',
-  totalFat: 'totalFat',
-  createdAt: 'createdAt',
-  updated_at: 'updated_at'
+  phone: 'phone',
+  isOnline: 'isOnline',
+  startTime: 'startTime',
+  endTime: 'endTime'
 };
 
 exports.Prisma.SortOrder = {
@@ -264,37 +147,10 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.Gender = exports.$Enums.Gender = {
-  MALE: 'MALE',
-  FEMALE: 'FEMALE',
-  OTHER: 'OTHER'
-};
 
-exports.ActivityLevel = exports.$Enums.ActivityLevel = {
-  LOW: 'LOW',
-  MEDIUM: 'MEDIUM',
-  HIGH: 'HIGH'
-};
-
-exports.Unit = exports.$Enums.Unit = {
-  g: 'g',
-  ml: 'ml'
-};
 
 exports.Prisma.ModelName = {
-  Role: 'Role',
-  User: 'User',
-  UserSession: 'UserSession',
-  Profile: 'Profile',
-  DailyLog: 'DailyLog',
-  Meal: 'Meal',
-  MealItem: 'MealItem',
-  Exercise: 'Exercise',
-  WorkoutLog: 'WorkoutLog',
-  WaterLog: 'WaterLog',
-  WeightLog: 'WeightLog',
-  Food: 'Food',
-  CaloriesLog: 'CaloriesLog'
+  active_user: 'active_user'
 };
 
 /**

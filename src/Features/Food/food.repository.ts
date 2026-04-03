@@ -1,8 +1,8 @@
 import { Food } from "@prisma/client";
-import { prisma } from "config/db.config";
 import { CreateFoodBody } from "./schemas/food.schema";
 import { ResponseFood } from "./types/food.type";
 import { IFoodRepository } from "./food.interface";
+import { mainDb } from "config/db.config";
 
 export class foodRepository implements IFoodRepository {
     async foodCreate(
@@ -14,7 +14,7 @@ export class foodRepository implements IFoodRepository {
         const foodsWithUser: any = foods.map(f => ({ ...f, userId }));
 
         const createdFoods = await Promise.all(
-            foodsWithUser.map((food: any) => prisma.food.create({ data: food }))
+            foodsWithUser.map((food: any) => mainDb.food.create({ data: food }))
         );
         return {
             count: createdFoods.length,
@@ -23,7 +23,7 @@ export class foodRepository implements IFoodRepository {
 
     }
     async getSuggestionFood(name: string): Promise<Food[]> {
-        const foods = await prisma.food.findMany({
+        const foods = await mainDb.food.findMany({
             where: {
                 OR: [
                     {
@@ -51,13 +51,13 @@ export class foodRepository implements IFoodRepository {
 
         const skip = (pagee - 1) * limitt;
 
-        const [foods, total] = await prisma.$transaction([
-            prisma.food.findMany({
+        const [foods, total] = await mainDb.$transaction([
+            mainDb.food.findMany({
                 skip,
                 take: limitt,
                 orderBy: { created_at: "desc" },
             }),
-            prisma.food.count(),
+            mainDb.food.count(),
         ]);
 
         return {

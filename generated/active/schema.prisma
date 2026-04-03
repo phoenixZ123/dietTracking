@@ -1,0 +1,21 @@
+// prisma/active/schema.prisma
+datasource db {
+  provider = "postgresql" // your DB type
+  url      = env("DATABASE_URL") // make sure .env has DATABASE_URL
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../generated/active" // separate output for multi-schema
+}
+
+model active_user {
+  id        Int       @id @default(autoincrement())
+  userId    String
+  roleId    Int
+  name      String
+  phone     String
+  isOnline  Boolean   @default(false)
+  startTime DateTime  @default(now())
+  endTime   DateTime?
+}
