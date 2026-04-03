@@ -1,4 +1,4 @@
-import { DailyLog, Meal } from "@prisma/client";
+import { DailyLog } from "../../../../generated/main";
 import { createDailyLog, CreateMealInput, DailyLogResponse } from "../type/dailylog";
 
 export interface IDailyLogRepository {

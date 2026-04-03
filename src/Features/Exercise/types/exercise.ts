@@ -3,9 +3,9 @@ export type createExercise = {
     caloriesBurnedPerMin: number;
 }
 export interface UserWorkOutLog {
-    date?: string;
+    dailyLogId?: string;
     userId?: string;
-    exerciseId: string;
+    exerciseId: number;
     durationMin: number;
 }
 export interface WorkOutResponse {

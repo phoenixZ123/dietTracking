@@ -1,7 +1,7 @@
 // prisma/active/schema.prisma
 datasource db {
   provider = "postgresql"              // your DB type
-  url      = env("DATABASE_URL")      // make sure .env has DATABASE_URL
+  url      = env("ACTIVE_DATABASE_URL")      // make sure .env has DATABASE_URL
 }
 
 generator client {

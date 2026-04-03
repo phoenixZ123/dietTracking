@@ -1,7 +1,6 @@
-import { prisma } from "config/db.config";
+import { MealItem } from "../../../generated/main";
 import { IMealRepository } from "./interface/meal.interface";
 import { mealRepository } from "./meal.repository";
-import { MealItem } from "@prisma/client";
 
 export class MealService {
     private mealRepository: IMealRepository;

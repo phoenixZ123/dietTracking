@@ -1,7 +1,7 @@
 import { DailyLog } from "../../../generated/main";
 import { IDailyLogRepository } from "./interface/daily-log.interface";
-import { createDailyLog, CreateMealInput, DailyLogResponse } from "./type/dailylog";
-import { mainDb } from "config/db.config";
+import { createDailyLog} from "./type/dailylog";
+import { mainDb } from "../../config/db.config";
 
 export class dailyLogRepository implements IDailyLogRepository {
 
@@ -88,7 +88,7 @@ export class dailyLogRepository implements IDailyLogRepository {
     }
 
     async getDateByUserId(userId: string): Promise<DailyLog[]> {
-        return mainDb.dailyLog.findMany({ where: { user: { id: userId } }, include: { user: true, meals: true } })
+        return mainDb.dailyLog.findMany({ where: { user: { id: userId } }, include: {  meals: true } })
     }
 }
 

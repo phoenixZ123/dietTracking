@@ -23,7 +23,7 @@ model User {
   phone_no String? @unique
   password String
   name     String
-  roleId   Int     @default(2)
+  roleId   Int
   role     Role    @relation(fields: [roleId], references: [id])
 
   created_at DateTime @default(now())
@@ -68,15 +68,6 @@ model Profile {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model DailyLog {
-  id     String   @id @default(uuid())
-  date   DateTime
-  userId String
-
-  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  meals Meal[]
-}
-
 model Meal {
   id    String @id @default(uuid())
   name  String
@@ -103,7 +94,7 @@ model MealItem {
 }
 
 model Exercise {
-  id                   String   @id @default(uuid())
+  id                   Int      @id @default(autoincrement())
   name                 String
   caloriesBurnedPerMin Float
   created_at           DateTime @default(now())
@@ -112,15 +103,26 @@ model Exercise {
   workoutLogs WorkoutLog[]
 }
 
+model DailyLog {
+  id     String   @id @default(uuid())
+  date   DateTime
+  userId String
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  meals       Meal[]
+  workoutLogs WorkoutLog[]
+}
+
 model WorkoutLog {
-  id          String   @id @default(uuid())
-  date        DateTime
+  id          String @id @default(uuid())
+  dailyLogId  String
   userId      String
-  exerciseId  String
+  exerciseId  Int
   durationMin Float
 
   user     User     @relation(fields: [userId], references: [id])
   exercise Exercise @relation(fields: [exerciseId], references: [id])
+  dailyLog DailyLog @relation(fields: [dailyLogId], references: [id])
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

@@ -1,8 +1,8 @@
-import { Food } from "@prisma/client";
 import { CreateFoodBody } from "./schemas/food.schema";
 import { ResponseFood } from "./types/food.type";
 import { IFoodRepository } from "./food.interface";
-import { mainDb } from "config/db.config";
+import { mainDb } from "../../config/db.config";
+import { Food } from "../../../generated/main";
 
 export class foodRepository implements IFoodRepository {
     async foodCreate(
@@ -72,7 +72,7 @@ export class foodRepository implements IFoodRepository {
 
     }
     async getFoodById(foodId: string): Promise<any> {
-        return await prisma.food.findFirst({
+        return await mainDb.food.findFirst({
             where: {
                 id: foodId
             }

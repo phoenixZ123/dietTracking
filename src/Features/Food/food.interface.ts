@@ -1,4 +1,4 @@
-import { Food } from "@prisma/client";
+import { Food } from "../../../generated/main";
 import { CreateFoodBody } from "./schemas/food.schema";
 import { ResponseFood } from "./types/food.type";
 

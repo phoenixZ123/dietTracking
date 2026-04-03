@@ -1,4 +1,3 @@
-import { Profile, User } from "@prisma/client";
 import { CreateUser, ProfileResponse, UpdateProfile, UserCreateResponse, UserLogin } from "../types/user";
 import { UpdateProfileBody } from "../user.repository";
 

@@ -1,7 +1,6 @@
-import { ActivityLevel, CreateUser, ProfileResponse, UserLogin } from "./types/user";
+import { ActivityLevel, CreateUser, UserLogin } from "./types/user";
 import { changePhoneNo } from "../../Features/utils/phone.util";
 import { mainDb } from "../../config/db.config";
-import { Prisma } from "@prisma/client";
 import { checkPassword, parseGender } from "../../Features/utils/userProfile.util";
 import { IAuthRepository } from "./interface/user.interface";
 import { Gender } from "../../../generated/main";
@@ -58,6 +57,9 @@ export class AuthRepository implements IAuthRepository {
                     phone_no: userData.phone_no,
                     password: userData.password,
                     name: userData.name,
+                    role: {
+                        connect: { id: 2 }
+                    }
                 },
             });
 
@@ -71,6 +73,8 @@ export class AuthRepository implements IAuthRepository {
                 where: { id: user.id },
                 include: {
                     profile: true,
+                    role: true
+
                 },
             });
         });
@@ -89,11 +93,12 @@ export class AuthRepository implements IAuthRepository {
                 email: true,
                 phone_no: true,
                 password: true,
-                // role: {
-                //     select: {
-                //         name: true, // get the role name
-                //     }
-                // }
+                role: {
+                    select: {
+                        id:true,
+                        name: true, // get the role name
+                    }
+                }
             },
 
         });

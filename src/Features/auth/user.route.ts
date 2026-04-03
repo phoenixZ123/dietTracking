@@ -1,4 +1,4 @@
-import fastify, { FastifyInstance, FastifyRequest } from "fastify";
+import fastify, { FastifyInstance } from "fastify";
 import { authSchema } from "./schemas/user.schema";
 import { AuthHandler } from "./user.handler";
 

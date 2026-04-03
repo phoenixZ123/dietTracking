@@ -1,69 +1,86 @@
 import { mainDb } from "config/db.config";
 import { IExerciseRepository } from "./interface/exercise.interface";
 import { createExercise, UserWorkOutLog } from "./types/exercise";
-import { Exercise, WorkoutLog } from "@prisma/client";
+import { Exercise, WorkoutLog } from "../../../generated/main";
 
-interface caloriesResponse{
+interface caloriesResponse {
     date: Date;
-    exercise?:string;
+    exercise?: string;
     burnedCalories: number;
-    totalDuration:number;
+    totalDuration: number;
 }
+
+interface getUserResponse {
+    id: string;
+    email: string | null;
+    phone_no: string | null;
+    name: string;
+    role: { id: number; name: string };
+    created_at: Date;
+    updated_at: Date;
+}
+
 export class ExerciseRepository implements IExerciseRepository {
     async createExercise(exerciseData: createExercise): Promise<Exercise> {
-        const exercise = mainDb.exercise.create({
+        return mainDb.exercise.create({
             data: {
                 name: exerciseData.name,
                 caloriesBurnedPerMin: exerciseData.caloriesBurnedPerMin
             }
         });
-        return exercise;
     }
-    async UserExercise(ucdata: UserWorkOutLog, userId: string): Promise<WorkoutLog> {
-        const workoutDate: any = ucdata.date;
-        const workoutLog = await mainDb.workoutLog.create({
+
+    async getUser(userId: string): Promise<getUserResponse | null> {
+        return mainDb.user.findUnique({
+            where: { id: userId },
+            include: { role: true },
+        });
+    }
+
+    async UserExercise(ucdata: UserWorkOutLog, userId: string): Promise<WorkoutLog | null> {
+        if (!ucdata.dailyLogId) {
+          return null;
+        }
+        return mainDb.workoutLog.create({
             data: {
-                date: new Date(workoutDate),
+                dailyLogId: ucdata.dailyLogId,
                 exerciseId: ucdata.exerciseId,
                 durationMin: ucdata.durationMin,
                 userId
             },
             include: {
-                user: true,
-                exercise: true
+                exercise: true,
+                dailyLog:true
             }
         });
-        return workoutLog;
     }
+
     async getDailyBurnedCalories(userId: string): Promise<caloriesResponse[]> {
-        // Fetch all workout logs for the user
         const logs = await mainDb.workoutLog.findMany({
             where: { userId },
-            orderBy: { date: "desc" },
-            include: { exercise: true, user: true }
+            orderBy: { created_at: "desc" }, // use created_at instead of date
+            include: { exercise: true }
         });
-        
-        // Map each log to include its burned calories and date
-        const result = logs.map(log => ({
-            date: log.date,
-            exercise:log.exercise.name,
+
+        return logs.map(log => ({
+            date: log.created_at,
+            exercise: log.exercise.name,
             burnedCalories: log.exercise.caloriesBurnedPerMin * log.durationMin,
-            totalDuration:log.durationMin
+            totalDuration: log.durationMin
         }));
-        return result;
     }
+
     async getDailyExercisesScopeMultiDay(userId: string): Promise<any> {
         const logs = await mainDb.workoutLog.findMany({
-            where: {
-                userId,
-            },
+            where: { userId },
             include: { exercise: true },
-            orderBy: { date: "asc" }
+            orderBy: { created_at: "asc" }
         });
+
         const dailyMap: Record<string, Record<string, any>> = {};
 
         for (const log of logs) {
-            const day = new Date(log.date).toISOString().split("T")[0];
+            const day = log.created_at.toISOString().split("T")[0];
 
             if (!dailyMap[day]) dailyMap[day] = {};
 
@@ -79,12 +96,10 @@ export class ExerciseRepository implements IExerciseRepository {
             dailyMap[day][log.exerciseId].caloriesBurned += log.durationMin * log.exercise.caloriesBurnedPerMin;
         }
 
-        // convert to array per day
         return Object.entries(dailyMap).map(([day, exercises]) => ({
             date: day,
             exercises: Object.values(exercises),
             totalCaloriesBurned: Object.values(exercises).reduce((sum, ex) => sum + ex.caloriesBurned, 0)
         }));
     }
-
 }

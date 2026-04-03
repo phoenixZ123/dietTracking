@@ -1,8 +1,8 @@
-import { Meal } from "@prisma/client";
 import { MealService } from "./meal.service";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { http_status } from "Features/shared/constants/http";
 import { mainDb } from "config/db.config";
+import { Meal } from "../../../generated/main";
 
 const mealService = new MealService();
 

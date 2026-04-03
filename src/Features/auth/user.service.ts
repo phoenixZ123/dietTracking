@@ -1,6 +1,5 @@
-import fastify, { FastifyInstance } from "fastify";
-import bcrypt from "bcrypt";
-import { CreateUser, UpdateProfile, UserLogin } from "./types/user";
+import { FastifyInstance } from "fastify";
+import { CreateUser } from "./types/user";
 import { RegisterResponse } from "./types/user";
 
 import { AuthRepository, UpdateProfileBody } from "./user.repository";
@@ -10,9 +9,6 @@ import { hashPassword } from "../../Features/utils/hash";
 import { JwtPayload } from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import { generateJWT } from "../../Features/utils/auth.util";
-import { UpdateFoodBody } from "Features/Food/schemas/food.schema";
-import { Profile } from "@prisma/client";
-import { User } from "@prisma/client";
 import { IAuthRepository } from "./interface/user.interface";
 
 export class AuthService {

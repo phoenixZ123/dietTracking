@@ -163,13 +163,13 @@ const config = {
   "inlineDatasources": {
     "db": {
       "url": {
-        "fromEnvVar": "DATABASE_URL",
+        "fromEnvVar": "ACTIVE_DATABASE_URL",
         "value": null
       }
     }
   },
-  "inlineSchema": "// prisma/active/schema.prisma\ndatasource db {\n  provider = \"postgresql\" // your DB type\n  url      = env(\"DATABASE_URL\") // make sure .env has DATABASE_URL\n}\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../../generated/active\" // separate output for multi-schema\n}\n\nmodel active_user {\n  id        Int       @id @default(autoincrement())\n  userId    String\n  roleId    Int\n  name      String\n  phone     String\n  isOnline  Boolean   @default(false)\n  startTime DateTime  @default(now())\n  endTime   DateTime?\n}\n",
-  "inlineSchemaHash": "388a1c5b6d77e1132eca51e5b58a0a2faa33c375cfbf05a935159e82373ed8b7",
+  "inlineSchema": "// prisma/active/schema.prisma\ndatasource db {\n  provider = \"postgresql\" // your DB type\n  url      = env(\"ACTIVE_DATABASE_URL\") // make sure .env has DATABASE_URL\n}\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../../generated/active\" // separate output for multi-schema\n}\n\nmodel active_user {\n  id        Int       @id @default(autoincrement())\n  userId    String\n  roleId    Int\n  name      String\n  phone     String\n  isOnline  Boolean   @default(false)\n  startTime DateTime  @default(now())\n  endTime   DateTime?\n}\n",
+  "inlineSchemaHash": "38c04c2aaa9c8832281af94590ad2cfe9c6a378317ba3624538252ffb34b75db",
   "copyEngine": true
 }
 

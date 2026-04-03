@@ -1,9 +1,9 @@
-import { DailyLog } from "@prisma/client";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { dailyLogService } from "./daily-log.service";
 import { dailyLogRepository } from "./daily-log.repository";
 import { createDailyLog } from "./type/dailylog";
-import { http_status } from "Features/shared/constants/http";
+import { http_status } from "../../Features/shared/constants/http";
+import { DailyLog } from "../../../generated/main";
 
 
 export class DailyLogHandler {
@@ -41,7 +41,6 @@ export class DailyLogHandler {
         res: FastifyReply
     ) {
         const { date } = req.params;
-
         if (!date) {
             return res.code(http_status.BadRequest).send({
                 success: false,

@@ -1,10 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { http_status } from "../../Features/shared/constants/http";
 import { AuthService } from "./user.service";
-import { CreateUser, UpdateProfile } from "./types/user";
+import { CreateUser } from "./types/user";
 import logger from "../../Features/core/logger";
 import { UpdateProfileBody } from "./user.repository";
-import { Profile } from "@prisma/client";
 
 const authService = new AuthService();
 

@@ -165,12 +165,6 @@ exports.Prisma.ProfileScalarFieldEnum = {
   activityLvl: 'activityLvl'
 };
 
-exports.Prisma.DailyLogScalarFieldEnum = {
-  id: 'id',
-  date: 'date',
-  userId: 'userId'
-};
-
 exports.Prisma.MealScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -195,9 +189,15 @@ exports.Prisma.ExerciseScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
-exports.Prisma.WorkoutLogScalarFieldEnum = {
+exports.Prisma.DailyLogScalarFieldEnum = {
   id: 'id',
   date: 'date',
+  userId: 'userId'
+};
+
+exports.Prisma.WorkoutLogScalarFieldEnum = {
+  id: 'id',
+  dailyLogId: 'dailyLogId',
   userId: 'userId',
   exerciseId: 'exerciseId',
   durationMin: 'durationMin',
@@ -286,10 +286,10 @@ exports.Prisma.ModelName = {
   User: 'User',
   UserSession: 'UserSession',
   Profile: 'Profile',
-  DailyLog: 'DailyLog',
   Meal: 'Meal',
   MealItem: 'MealItem',
   Exercise: 'Exercise',
+  DailyLog: 'DailyLog',
   WorkoutLog: 'WorkoutLog',
   WaterLog: 'WaterLog',
   WeightLog: 'WeightLog',

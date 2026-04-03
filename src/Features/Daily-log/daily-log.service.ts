@@ -1,7 +1,6 @@
-import { DailyLog, Meal } from "@prisma/client";
+import { DailyLog } from "../../../generated/main";
 import { IDailyLogRepository } from "./interface/daily-log.interface";
-import { dailyLogRepository } from "./daily-log.repository";
-import { createDailyLog, CreateMealInput, DailyLogResponse } from "./type/dailylog";
+import { createDailyLog, DailyLogResponse } from "./type/dailylog";
 
 export class dailyLogService {
     constructor(private dailyLogRepository: IDailyLogRepository) { }

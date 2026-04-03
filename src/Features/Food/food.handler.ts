@@ -3,7 +3,7 @@ import { FoodService } from "./food.service";
 import { foodSchema } from "./schemas/food.schema";
 import { ResponseFood } from "./types/food.type";
 import { FromSchema } from "json-schema-to-ts";
-import { http_status } from "Features/shared/constants/http";
+import { http_status } from "../../Features/shared/constants/http";
 
 export type CreateFoodBody = FromSchema<
     typeof foodSchema.create.schema.body

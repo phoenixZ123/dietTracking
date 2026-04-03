@@ -1,8 +1,7 @@
-import { prisma } from "config/db.config";
+import { Food } from "../../../generated/main";
 import { IFoodRepository } from "./food.interface";
 import { foodRepository } from "./food.repository";
 import { CreateFoodBody } from "./schemas/food.schema";
-import { Food } from "@prisma/client";
 
 
 export class FoodService {

@@ -5,8 +5,8 @@ import config from "../../config/appsetting"
 import path from "path";
 import { createWriteStream } from "fs";
 import { pipeline } from "stream/promises";
-import { minioClient } from "Features/core/minio";
-import s3Client from "Features/core/s3Client";
+import { minioClient } from "../../Features/core/minio";
+import s3Client from "../../Features/core/s3Client";
 
 export class MediaService {
 
