@@ -58,7 +58,7 @@ export class AuthRepository implements IAuthRepository {
                     password: userData.password,
                     name: userData.name,
                     role: {
-                        connect: { id: 2 }
+                        connect: { id: userData.roleId }
                     }
                 },
             });

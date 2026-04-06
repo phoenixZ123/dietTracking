@@ -2,6 +2,7 @@ export type createDailyLog = {
   id?: string;
   date: string;
   userId?: string;
+  weightLb?: number;
 }
 export interface CreateMealInput {
   name: string;

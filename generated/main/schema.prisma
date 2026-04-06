@@ -129,21 +129,25 @@ model WorkoutLog {
 }
 
 model WaterLog {
-  id     String   @id @default(uuid())
-  date   DateTime
-  userId String
-  amount Float
+  id            String   @id @default(uuid())
+  date          DateTime
+  userId        String
+  amount        Float
+  totalCalories Float?   @default(0)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model WeightLog {
-  id       String   @id @default(uuid())
-  date     DateTime
-  userId   String
-  weightLb Float?
+  id                String   @id @default(uuid())
+  date              DateTime
+  userId            String
+  weightLb          Float?
+  totalBurnCalories Float?   @default(0)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date]) // ensures one log per user per day
 }
 
 //food base in 100

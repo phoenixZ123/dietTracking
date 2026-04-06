@@ -13,6 +13,11 @@ export class foodRepository implements IFoodRepository {
         const foods = Array.isArray(foodData) ? foodData : [foodData];
         const foodsWithUser: any = foods.map(f => ({ ...f, userId }));
 
+        const user = await this.getUser(userId);
+        if (user.roleId !== 1) {
+            return { success: false, message: "Only admins can create foods" };
+        }
+
         const createdFoods = await Promise.all(
             foodsWithUser.map((food: any) => mainDb.food.create({ data: food }))
         );
@@ -21,6 +26,12 @@ export class foodRepository implements IFoodRepository {
             data: Array.isArray(foodData) ? createdFoods : createdFoods[0]
         };
 
+    }
+    async getUser(userId: string): Promise<any> {
+        return mainDb.user.findUnique({
+            where: { id: userId },
+            select: { id: true, name: true, email: true, phone_no: true, roleId: true }
+        });
     }
     async getSuggestionFood(name: string): Promise<Food[]> {
         const foods = await mainDb.food.findMany({

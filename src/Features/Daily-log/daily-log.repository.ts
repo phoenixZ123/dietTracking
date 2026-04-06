@@ -1,27 +1,42 @@
 import { DailyLog } from "../../../generated/main";
 import { IDailyLogRepository } from "./interface/daily-log.interface";
-import { createDailyLog} from "./type/dailylog";
+import { createDailyLog } from "./type/dailylog";
 import { mainDb } from "../../config/db.config";
-
+function toUTCMidnight(date: Date) {
+  return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+}
 export class dailyLogRepository implements IDailyLogRepository {
-
+  
     async createDailyLog(data: createDailyLog, userId: string): Promise<any> {
-        const dailyLog = await mainDb.dailyLog.create({
+        // Normalize to UTC midnight
+      
+        const date = toUTCMidnight(new Date(data.date));
+
+        await mainDb.dailyLog.create({
             data: {
-                date: new Date(data.date),
+                date: date,
                 userId,
-                meals: {
-                    create: [
-                        { name: "Breakfast" },
-                        { name: "Lunch" },
-                        { name: "Dinner" },
-                    ],
-                },
-            },
-            include: {
-                meals: true, // return meals also
-            },
+            }
+        })
+        let dailyLog = await mainDb.weightLog.findUnique({
+            where: {
+                userId_date: {
+                    userId,
+                    date: date
+                }
+            }
         });
+
+        if (!dailyLog) {
+            dailyLog = await mainDb.weightLog.create({
+                data: {
+                    userId,
+                    date: date,
+                    weightLb: data.weightLb ?? 0,
+                    totalBurnCalories: 0
+                }
+            });
+        }
 
         return dailyLog;
     }
@@ -88,7 +103,7 @@ export class dailyLogRepository implements IDailyLogRepository {
     }
 
     async getDateByUserId(userId: string): Promise<DailyLog[]> {
-        return mainDb.dailyLog.findMany({ where: { user: { id: userId } }, include: {  meals: true } })
+        return mainDb.dailyLog.findMany({ where: { user: { id: userId } }, include: { meals: true } })
     }
 }
 

@@ -209,14 +209,16 @@ exports.Prisma.WaterLogScalarFieldEnum = {
   id: 'id',
   date: 'date',
   userId: 'userId',
-  amount: 'amount'
+  amount: 'amount',
+  totalCalories: 'totalCalories'
 };
 
 exports.Prisma.WeightLogScalarFieldEnum = {
   id: 'id',
   date: 'date',
   userId: 'userId',
-  weightLb: 'weightLb'
+  weightLb: 'weightLb',
+  totalBurnCalories: 'totalBurnCalories'
 };
 
 exports.Prisma.FoodScalarFieldEnum = {

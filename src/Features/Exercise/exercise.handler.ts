@@ -26,7 +26,7 @@ export class ExerciseHandler {
             return res.status(status).send({ error: err.message });
         }
     }
-    async createUserLog(req: FastifyRequest<{ Body: UserWorkOutLog }>, res: FastifyReply): Promise<any> {
+    async createUserExercise(req: FastifyRequest<{ Body: UserWorkOutLog }>, res: FastifyReply): Promise<any> {
         const data = req.body;
         const user = req.user as { id: string };
         if (!data) {

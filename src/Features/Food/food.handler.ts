@@ -39,7 +39,11 @@ export class FoodHandler {
         }
         const userId = user.id;
         const food = await this.foodService.createFood(foodData, userId); // ✅ use userId
-
+        if (!food || food.success === false) {
+            return reply.status(http_status.Forbidden).send({
+                success: false, message: food.message || "Failed to create food"
+            });
+        }
         return {
             success: true,
             message: "Food Created Successfully",

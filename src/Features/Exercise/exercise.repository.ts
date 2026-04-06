@@ -39,35 +39,85 @@ export class ExerciseRepository implements IExerciseRepository {
 
     async UserExercise(ucdata: UserWorkOutLog, userId: string): Promise<WorkoutLog | null> {
         if (!ucdata.dailyLogId) {
-          return null;
+            return null;
         }
-        return mainDb.workoutLog.create({
+        const workout = await mainDb.workoutLog.create({
             data: {
                 dailyLogId: ucdata.dailyLogId,
                 exerciseId: ucdata.exerciseId,
                 durationMin: ucdata.durationMin,
                 userId
             },
-            include: {
-                exercise: true,
-                dailyLog:true
-            }
+            include: { exercise: true, dailyLog: { select: { date: true } } }
         });
+
+        // 2️⃣ Calculate burned calories
+        const burnedCalories = workout.exercise.caloriesBurnedPerMin * workout.durationMin;
+
+        // 3️⃣ Update total calories in daily log
+        await mainDb.weightLog.update({
+            where: {
+                userId_date: {  // compound unique key
+                    userId: userId,
+                    date: workout.dailyLog.date
+                }
+            },
+            data: { totalBurnCalories: { increment: burnedCalories } }
+        });
+
+        return workout;
     }
 
-    async getDailyBurnedCalories(userId: string): Promise<caloriesResponse[]> {
+    async getDailyBurnedCalories(userId: string): Promise<{
+        daily: caloriesResponse[];
+        totalCalories: number;
+    }> {
         const logs = await mainDb.workoutLog.findMany({
             where: { userId },
-            orderBy: { created_at: "desc" }, // use created_at instead of date
-            include: { exercise: true }
+            orderBy: { created_at: "desc" },
+            select: {
+                created_at: true,
+                durationMin: true,
+                exercise: {
+                    select: {
+                        name: true,
+                        caloriesBurnedPerMin: true
+                    }
+                }
+            }
         });
 
-        return logs.map(log => ({
-            date: log.created_at,
-            exercise: log.exercise.name,
-            burnedCalories: log.exercise.caloriesBurnedPerMin * log.durationMin,
-            totalDuration: log.durationMin
-        }));
+        const dailyMap: Record<string, caloriesResponse> = {};
+        let totalCalories = 0;
+
+        logs.forEach((log) => {
+            const date = new Date(log.created_at).toISOString().split("T")[0];
+
+            const burned =
+                log.durationMin * (log.exercise?.caloriesBurnedPerMin ?? 0);
+
+            // ✅ total calories (all-time)
+            totalCalories += burned;
+            // ✅ group by date
+            if (!dailyMap[date]) {
+                dailyMap[date] = {
+                    date: new Date(log.created_at),
+                    exercise: "multiple", // since grouped
+                    burnedCalories: 0,
+                    totalDuration: 0
+                };
+            }
+
+            dailyMap[date].burnedCalories += burned;
+            dailyMap[date].totalDuration += log.durationMin;
+        });
+
+        return {
+            daily: Object.values(dailyMap).sort(
+                (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+            ),
+            totalCalories
+        };
     }
 
     async getDailyExercisesScopeMultiDay(userId: string): Promise<any> {
