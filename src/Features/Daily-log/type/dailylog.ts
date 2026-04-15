@@ -23,3 +23,8 @@ export interface DailyLogResponse {
   userId: string;   // ✅ added
   meals: MealResponse[];
 }
+export interface LogResponse {
+  success: Boolean;
+  message: String;
+  // data:Object
+}

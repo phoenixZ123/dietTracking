@@ -131,7 +131,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\backend\\mybackend\\fastify\\dietTracking\\generated\\active",
+      "value": "D:\\backend\\dietTracking\\generated\\active",
       "fromEnvVar": null
     },
     "config": {
@@ -145,7 +145,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\backend\\mybackend\\fastify\\dietTracking\\prisma\\active\\schema.prisma",
+    "sourceFilePath": "D:\\backend\\dietTracking\\prisma\\active\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -159,6 +159,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {

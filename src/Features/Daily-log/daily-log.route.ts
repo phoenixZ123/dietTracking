@@ -5,8 +5,9 @@ const dailyLogHandler = new DailyLogHandler();
 export default async function dailyLogRoute(fastify: FastifyInstance) {
     fastify.post(
         "/create-daily-log",
-        dailyLogHandler.create.bind(dailyLogHandler) // FIX: ensure "this" binding
+        dailyLogHandler.create.bind(dailyLogHandler) 
     );
     fastify.get("/get-daily-log/:date", dailyLogHandler.getDailyLog.bind(dailyLogHandler));
-    fastify.get("/get-user-dailyLogs", dailyLogHandler.getDateUserId.bind(dailyLogHandler));
+    fastify.get("/daily-logs", dailyLogHandler.getDateUserId.bind(dailyLogHandler));
+    fastify.delete("/:logId", dailyLogHandler.deleteDailyLog.bind(dailyLogHandler));
 }

@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { dailyLogService } from "./daily-log.service";
 import { dailyLogRepository } from "./daily-log.repository";
-import { createDailyLog } from "./type/dailylog";
+import { createDailyLog, LogResponse } from "./type/dailylog";
 import { http_status } from "../../Features/shared/constants/http";
 import { DailyLog } from "../../../generated/main";
 
@@ -80,5 +80,19 @@ export class DailyLogHandler {
         })
 
     }
+    async deleteDailyLog(req: FastifyRequest<{ Params: { logId: string } }>, reply: FastifyReply): Promise<LogResponse> {
+        const logId = req.params.logId;
+        const response = await this.dailyLogService.deleteDailyLog(logId)
 
+        if (response == false) {
+            return reply.status(http_status.Forbidden).send({
+                success: false,
+                message: "Cannot Delete DailyLog"
+            })
+        }
+        return reply.status(http_status.Success).send({
+            success: true,
+            message: "DailyLog Deleted Successfully"
+        })
+    }
 }

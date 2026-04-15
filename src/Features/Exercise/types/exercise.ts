@@ -5,7 +5,7 @@ export type createExercise = {
 export interface UserWorkOutLog {
     dailyLogId?: string;
     userId?: string;
-    exerciseId: number;
+    exerciseId: string;
     durationMin: number;
 }
 export interface WorkOutResponse {

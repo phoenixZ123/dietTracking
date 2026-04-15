@@ -94,7 +94,7 @@ model MealItem {
 }
 
 model Exercise {
-  id                   Int      @id @default(autoincrement())
+  id                   String   @id @default(uuid())
   name                 String
   caloriesBurnedPerMin Float
   created_at           DateTime @default(now())
@@ -117,7 +117,7 @@ model WorkoutLog {
   id          String @id @default(uuid())
   dailyLogId  String
   userId      String
-  exerciseId  Int
+  exerciseId  String
   durationMin Float
 
   user     User     @relation(fields: [userId], references: [id])

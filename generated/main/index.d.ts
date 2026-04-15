@@ -8347,17 +8347,15 @@ export namespace Prisma {
   }
 
   export type ExerciseAvgAggregateOutputType = {
-    id: number | null
     caloriesBurnedPerMin: number | null
   }
 
   export type ExerciseSumAggregateOutputType = {
-    id: number | null
     caloriesBurnedPerMin: number | null
   }
 
   export type ExerciseMinAggregateOutputType = {
-    id: number | null
+    id: string | null
     name: string | null
     caloriesBurnedPerMin: number | null
     created_at: Date | null
@@ -8365,7 +8363,7 @@ export namespace Prisma {
   }
 
   export type ExerciseMaxAggregateOutputType = {
-    id: number | null
+    id: string | null
     name: string | null
     caloriesBurnedPerMin: number | null
     created_at: Date | null
@@ -8383,12 +8381,10 @@ export namespace Prisma {
 
 
   export type ExerciseAvgAggregateInputType = {
-    id?: true
     caloriesBurnedPerMin?: true
   }
 
   export type ExerciseSumAggregateInputType = {
-    id?: true
     caloriesBurnedPerMin?: true
   }
 
@@ -8504,7 +8500,7 @@ export namespace Prisma {
   }
 
   export type ExerciseGroupByOutputType = {
-    id: number
+    id: string
     name: string
     caloriesBurnedPerMin: number
     created_at: Date
@@ -8568,7 +8564,7 @@ export namespace Prisma {
       workoutLogs: Prisma.$WorkoutLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
-      id: number
+      id: string
       name: string
       caloriesBurnedPerMin: number
       created_at: Date
@@ -8967,7 +8963,7 @@ export namespace Prisma {
    * Fields of the Exercise model
    */ 
   interface ExerciseFieldRefs {
-    readonly id: FieldRef<"Exercise", 'Int'>
+    readonly id: FieldRef<"Exercise", 'String'>
     readonly name: FieldRef<"Exercise", 'String'>
     readonly caloriesBurnedPerMin: FieldRef<"Exercise", 'Float'>
     readonly created_at: FieldRef<"Exercise", 'DateTime'>
@@ -10292,12 +10288,10 @@ export namespace Prisma {
   }
 
   export type WorkoutLogAvgAggregateOutputType = {
-    exerciseId: number | null
     durationMin: number | null
   }
 
   export type WorkoutLogSumAggregateOutputType = {
-    exerciseId: number | null
     durationMin: number | null
   }
 
@@ -10305,7 +10299,7 @@ export namespace Prisma {
     id: string | null
     dailyLogId: string | null
     userId: string | null
-    exerciseId: number | null
+    exerciseId: string | null
     durationMin: number | null
     created_at: Date | null
     updated_at: Date | null
@@ -10315,7 +10309,7 @@ export namespace Prisma {
     id: string | null
     dailyLogId: string | null
     userId: string | null
-    exerciseId: number | null
+    exerciseId: string | null
     durationMin: number | null
     created_at: Date | null
     updated_at: Date | null
@@ -10334,12 +10328,10 @@ export namespace Prisma {
 
 
   export type WorkoutLogAvgAggregateInputType = {
-    exerciseId?: true
     durationMin?: true
   }
 
   export type WorkoutLogSumAggregateInputType = {
-    exerciseId?: true
     durationMin?: true
   }
 
@@ -10464,7 +10456,7 @@ export namespace Prisma {
     id: string
     dailyLogId: string
     userId: string
-    exerciseId: number
+    exerciseId: string
     durationMin: number
     created_at: Date
     updated_at: Date
@@ -10547,7 +10539,7 @@ export namespace Prisma {
       id: string
       dailyLogId: string
       userId: string
-      exerciseId: number
+      exerciseId: string
       durationMin: number
       created_at: Date
       updated_at: Date
@@ -10950,7 +10942,7 @@ export namespace Prisma {
     readonly id: FieldRef<"WorkoutLog", 'String'>
     readonly dailyLogId: FieldRef<"WorkoutLog", 'String'>
     readonly userId: FieldRef<"WorkoutLog", 'String'>
-    readonly exerciseId: FieldRef<"WorkoutLog", 'Int'>
+    readonly exerciseId: FieldRef<"WorkoutLog", 'String'>
     readonly durationMin: FieldRef<"WorkoutLog", 'Float'>
     readonly created_at: FieldRef<"WorkoutLog", 'DateTime'>
     readonly updated_at: FieldRef<"WorkoutLog", 'DateTime'>
@@ -16177,7 +16169,7 @@ export namespace Prisma {
     AND?: ExerciseWhereInput | ExerciseWhereInput[]
     OR?: ExerciseWhereInput[]
     NOT?: ExerciseWhereInput | ExerciseWhereInput[]
-    id?: IntFilter<"Exercise"> | number
+    id?: StringFilter<"Exercise"> | string
     name?: StringFilter<"Exercise"> | string
     caloriesBurnedPerMin?: FloatFilter<"Exercise"> | number
     created_at?: DateTimeFilter<"Exercise"> | Date | string
@@ -16195,7 +16187,7 @@ export namespace Prisma {
   }
 
   export type ExerciseWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
+    id?: string
     AND?: ExerciseWhereInput | ExerciseWhereInput[]
     OR?: ExerciseWhereInput[]
     NOT?: ExerciseWhereInput | ExerciseWhereInput[]
@@ -16223,7 +16215,7 @@ export namespace Prisma {
     AND?: ExerciseScalarWhereWithAggregatesInput | ExerciseScalarWhereWithAggregatesInput[]
     OR?: ExerciseScalarWhereWithAggregatesInput[]
     NOT?: ExerciseScalarWhereWithAggregatesInput | ExerciseScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"Exercise"> | number
+    id?: StringWithAggregatesFilter<"Exercise"> | string
     name?: StringWithAggregatesFilter<"Exercise"> | string
     caloriesBurnedPerMin?: FloatWithAggregatesFilter<"Exercise"> | number
     created_at?: DateTimeWithAggregatesFilter<"Exercise"> | Date | string
@@ -16288,7 +16280,7 @@ export namespace Prisma {
     id?: StringFilter<"WorkoutLog"> | string
     dailyLogId?: StringFilter<"WorkoutLog"> | string
     userId?: StringFilter<"WorkoutLog"> | string
-    exerciseId?: IntFilter<"WorkoutLog"> | number
+    exerciseId?: StringFilter<"WorkoutLog"> | string
     durationMin?: FloatFilter<"WorkoutLog"> | number
     created_at?: DateTimeFilter<"WorkoutLog"> | Date | string
     updated_at?: DateTimeFilter<"WorkoutLog"> | Date | string
@@ -16317,7 +16309,7 @@ export namespace Prisma {
     NOT?: WorkoutLogWhereInput | WorkoutLogWhereInput[]
     dailyLogId?: StringFilter<"WorkoutLog"> | string
     userId?: StringFilter<"WorkoutLog"> | string
-    exerciseId?: IntFilter<"WorkoutLog"> | number
+    exerciseId?: StringFilter<"WorkoutLog"> | string
     durationMin?: FloatFilter<"WorkoutLog"> | number
     created_at?: DateTimeFilter<"WorkoutLog"> | Date | string
     updated_at?: DateTimeFilter<"WorkoutLog"> | Date | string
@@ -16348,7 +16340,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"WorkoutLog"> | string
     dailyLogId?: StringWithAggregatesFilter<"WorkoutLog"> | string
     userId?: StringWithAggregatesFilter<"WorkoutLog"> | string
-    exerciseId?: IntWithAggregatesFilter<"WorkoutLog"> | number
+    exerciseId?: StringWithAggregatesFilter<"WorkoutLog"> | string
     durationMin?: FloatWithAggregatesFilter<"WorkoutLog"> | number
     created_at?: DateTimeWithAggregatesFilter<"WorkoutLog"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"WorkoutLog"> | Date | string
@@ -17116,6 +17108,7 @@ export namespace Prisma {
   }
 
   export type ExerciseCreateInput = {
+    id?: string
     name: string
     caloriesBurnedPerMin: number
     created_at?: Date | string
@@ -17124,7 +17117,7 @@ export namespace Prisma {
   }
 
   export type ExerciseUncheckedCreateInput = {
-    id?: number
+    id?: string
     name: string
     caloriesBurnedPerMin: number
     created_at?: Date | string
@@ -17133,6 +17126,7 @@ export namespace Prisma {
   }
 
   export type ExerciseUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     caloriesBurnedPerMin?: FloatFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17141,7 +17135,7 @@ export namespace Prisma {
   }
 
   export type ExerciseUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     caloriesBurnedPerMin?: FloatFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17150,7 +17144,7 @@ export namespace Prisma {
   }
 
   export type ExerciseCreateManyInput = {
-    id?: number
+    id?: string
     name: string
     caloriesBurnedPerMin: number
     created_at?: Date | string
@@ -17158,6 +17152,7 @@ export namespace Prisma {
   }
 
   export type ExerciseUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     caloriesBurnedPerMin?: FloatFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17165,7 +17160,7 @@ export namespace Prisma {
   }
 
   export type ExerciseUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     caloriesBurnedPerMin?: FloatFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17235,7 +17230,7 @@ export namespace Prisma {
     id?: string
     dailyLogId: string
     userId: string
-    exerciseId: number
+    exerciseId: string
     durationMin: number
     created_at?: Date | string
     updated_at?: Date | string
@@ -17255,7 +17250,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     dailyLogId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    exerciseId?: IntFieldUpdateOperationsInput | number
+    exerciseId?: StringFieldUpdateOperationsInput | string
     durationMin?: FloatFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17265,7 +17260,7 @@ export namespace Prisma {
     id?: string
     dailyLogId: string
     userId: string
-    exerciseId: number
+    exerciseId: string
     durationMin: number
     created_at?: Date | string
     updated_at?: Date | string
@@ -17282,7 +17277,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     dailyLogId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    exerciseId?: IntFieldUpdateOperationsInput | number
+    exerciseId?: StringFieldUpdateOperationsInput | string
     durationMin?: FloatFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18202,7 +18197,6 @@ export namespace Prisma {
   }
 
   export type ExerciseAvgOrderByAggregateInput = {
-    id?: SortOrder
     caloriesBurnedPerMin?: SortOrder
   }
 
@@ -18223,7 +18217,6 @@ export namespace Prisma {
   }
 
   export type ExerciseSumOrderByAggregateInput = {
-    id?: SortOrder
     caloriesBurnedPerMin?: SortOrder
   }
 
@@ -18271,7 +18264,6 @@ export namespace Prisma {
   }
 
   export type WorkoutLogAvgOrderByAggregateInput = {
-    exerciseId?: SortOrder
     durationMin?: SortOrder
   }
 
@@ -18296,7 +18288,6 @@ export namespace Prisma {
   }
 
   export type WorkoutLogSumOrderByAggregateInput = {
-    exerciseId?: SortOrder
     durationMin?: SortOrder
   }
 
@@ -19879,7 +19870,7 @@ export namespace Prisma {
   export type WorkoutLogUncheckedCreateWithoutUserInput = {
     id?: string
     dailyLogId: string
-    exerciseId: number
+    exerciseId: string
     durationMin: number
     created_at?: Date | string
     updated_at?: Date | string
@@ -20185,7 +20176,7 @@ export namespace Prisma {
     id?: StringFilter<"WorkoutLog"> | string
     dailyLogId?: StringFilter<"WorkoutLog"> | string
     userId?: StringFilter<"WorkoutLog"> | string
-    exerciseId?: IntFilter<"WorkoutLog"> | number
+    exerciseId?: StringFilter<"WorkoutLog"> | string
     durationMin?: FloatFilter<"WorkoutLog"> | number
     created_at?: DateTimeFilter<"WorkoutLog"> | Date | string
     updated_at?: DateTimeFilter<"WorkoutLog"> | Date | string
@@ -21043,7 +21034,7 @@ export namespace Prisma {
   export type WorkoutLogUncheckedCreateWithoutDailyLogInput = {
     id?: string
     userId: string
-    exerciseId: number
+    exerciseId: string
     durationMin: number
     created_at?: Date | string
     updated_at?: Date | string
@@ -21193,6 +21184,7 @@ export namespace Prisma {
   }
 
   export type ExerciseCreateWithoutWorkoutLogsInput = {
+    id?: string
     name: string
     caloriesBurnedPerMin: number
     created_at?: Date | string
@@ -21200,7 +21192,7 @@ export namespace Prisma {
   }
 
   export type ExerciseUncheckedCreateWithoutWorkoutLogsInput = {
-    id?: number
+    id?: string
     name: string
     caloriesBurnedPerMin: number
     created_at?: Date | string
@@ -21292,6 +21284,7 @@ export namespace Prisma {
   }
 
   export type ExerciseUpdateWithoutWorkoutLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     caloriesBurnedPerMin?: FloatFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21299,7 +21292,7 @@ export namespace Prisma {
   }
 
   export type ExerciseUncheckedUpdateWithoutWorkoutLogsInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     caloriesBurnedPerMin?: FloatFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21853,7 +21846,7 @@ export namespace Prisma {
   export type WorkoutLogCreateManyUserInput = {
     id?: string
     dailyLogId: string
-    exerciseId: number
+    exerciseId: string
     durationMin: number
     created_at?: Date | string
     updated_at?: Date | string
@@ -21942,7 +21935,7 @@ export namespace Prisma {
   export type WorkoutLogUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     dailyLogId?: StringFieldUpdateOperationsInput | string
-    exerciseId?: IntFieldUpdateOperationsInput | number
+    exerciseId?: StringFieldUpdateOperationsInput | string
     durationMin?: FloatFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21951,7 +21944,7 @@ export namespace Prisma {
   export type WorkoutLogUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     dailyLogId?: StringFieldUpdateOperationsInput | string
-    exerciseId?: IntFieldUpdateOperationsInput | number
+    exerciseId?: StringFieldUpdateOperationsInput | string
     durationMin?: FloatFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22255,7 +22248,7 @@ export namespace Prisma {
   export type WorkoutLogCreateManyDailyLogInput = {
     id?: string
     userId: string
-    exerciseId: number
+    exerciseId: string
     durationMin: number
     created_at?: Date | string
     updated_at?: Date | string
@@ -22292,7 +22285,7 @@ export namespace Prisma {
   export type WorkoutLogUncheckedUpdateWithoutDailyLogInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    exerciseId?: IntFieldUpdateOperationsInput | number
+    exerciseId?: StringFieldUpdateOperationsInput | string
     durationMin?: FloatFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22301,7 +22294,7 @@ export namespace Prisma {
   export type WorkoutLogUncheckedUpdateManyWithoutDailyLogInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    exerciseId?: IntFieldUpdateOperationsInput | number
+    exerciseId?: StringFieldUpdateOperationsInput | string
     durationMin?: FloatFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string

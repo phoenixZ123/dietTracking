@@ -31,12 +31,20 @@ export class dailyLogService {
             console.error("Error get dailylog:", error);
         }
     }
+    /**
+     * 
+     * @param userId - userid with integer
+     * @returns - return dailyLog date of user
+     */
     async getDateByUId(userId: string): Promise<DailyLog[] | any> {
         try {
             return this.dailyLogRepository.getDateByUserId(userId);
         } catch (err: any) {
             console.error("Error get user dailylog:", err.message);
         }
+    }
+    async deleteDailyLog(logId: string): Promise<Boolean> {
+        return this.dailyLogRepository.deleteLog(logId)
     }
 
 }

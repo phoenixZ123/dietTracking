@@ -3,22 +3,29 @@ import { IDailyLogRepository } from "./interface/daily-log.interface";
 import { createDailyLog } from "./type/dailylog";
 import { mainDb } from "../../config/db.config";
 function toUTCMidnight(date: Date) {
-  return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
 }
 export class dailyLogRepository implements IDailyLogRepository {
-  
+
     async createDailyLog(data: createDailyLog, userId: string): Promise<any> {
         // Normalize to UTC midnight
-      
+
         const date = toUTCMidnight(new Date(data.date));
 
-        await mainDb.dailyLog.create({
+        const dailylog = await mainDb.dailyLog.create({
             data: {
                 date: date,
                 userId,
             }
         })
-        let dailyLog = await mainDb.weightLog.findUnique({
+        const meal = await mainDb.meal.createMany({
+            data: [
+                { logId: dailylog.id, name: 'breakfast' },
+                { logId: dailylog.id, name: 'lunch' },
+                { logId: dailylog.id, name: 'dinner' },
+            ]
+        });
+        let weightLog = await mainDb.weightLog.findUnique({
             where: {
                 userId_date: {
                     userId,
@@ -27,8 +34,8 @@ export class dailyLogRepository implements IDailyLogRepository {
             }
         });
 
-        if (!dailyLog) {
-            dailyLog = await mainDb.weightLog.create({
+        if (!weightLog) {
+            weightLog = await mainDb.weightLog.create({
                 data: {
                     userId,
                     date: date,
@@ -37,8 +44,15 @@ export class dailyLogRepository implements IDailyLogRepository {
                 }
             });
         }
-
-        return dailyLog;
+        const log = await mainDb.meal.findMany({
+            where: {
+                logId: dailylog.id
+            },
+            include: {
+                dailyLog: { select: { date: true } }
+            }
+        });
+        return log;
     }
 
     async getDailyLog(date: string, userId: string): Promise<any> {
@@ -104,6 +118,44 @@ export class dailyLogRepository implements IDailyLogRepository {
 
     async getDateByUserId(userId: string): Promise<DailyLog[]> {
         return mainDb.dailyLog.findMany({ where: { user: { id: userId } }, include: { meals: true } })
+    }
+    async deleteLog(logId: string): Promise<boolean> {
+        try {
+            const workoutExists = await mainDb.workoutLog.findFirst({
+                where: { dailyLogId: logId },
+                select: { id: true }
+            });
+
+            if (workoutExists) {
+                return false;
+            }
+
+            const mealItemExists = await mainDb.mealItem.findFirst({
+                where: {
+                    meal: {
+                        logId: logId
+                    }
+                },
+                select: { id: true }
+            });
+
+            if (mealItemExists) {
+                return false;
+            }
+
+            await mainDb.dailyLog.delete({
+                where: { id: logId }
+            });
+            await mainDb.meal.deleteMany({
+                where: { dailyLog: { id: logId } }
+            })
+
+            return true;
+
+        } catch (error: any) {
+            console.error(error.message);
+            return false;
+        }
     }
 }
 
